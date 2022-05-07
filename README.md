@@ -3,7 +3,7 @@ Learn Japanese program by dmyTRUEk
 
 
 
-# TODO:
+## Todo:
 - exit by Ctrl+C
 - colored correct/wrong
 
