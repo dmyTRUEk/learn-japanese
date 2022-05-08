@@ -268,7 +268,13 @@ def ask_questions(tests: list[Test], test_len: TestLength) -> tuple[list[bool], 
         if is_answered_correctly:
             print_colored("Correct.", fg=fg.GREEN)
         else:
-            print_colored(f"WRONG! Correct answer is: {test.answer}", fg=fg.RED)
+            match test.answer:
+                case str(correct_answer):
+                    print_colored(f"WRONG! Correct answer is: {correct_answer}", fg=fg.RED)
+                case list(correct_answers):
+                    print_colored(f"WRONG! Correct answers are: {correct_answers}", fg=fg.RED)
+                case _:
+                    unreachable()
             mistaken_test = copy.deepcopy(test)
             mistaken_test.user_answer = user_answer
             if mistaken_test not in mistakes:
