@@ -1,6 +1,6 @@
 # Learn Japanese program by dmyTRUEk
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 from copy import deepcopy
 from dataclasses import dataclass
