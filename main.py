@@ -229,13 +229,11 @@ def ask_question_and_check_answer(test: Test) -> bool | None:
 
 
 def ask_questions(tests: list[Test], test_len: TestLength, test_len_n: None | int) -> list[bool]:
-    # print(f"{test_type = }")
-    # print(f"{test_len = }, {test_len_n=}")
-
     statistics = []
 
     def ask_question_and_check_answer_and_update_statistics(test: Test) -> bool:
         is_answer_correct = ask_question_and_check_answer(test)
+        # TODO?
         #if is_answer_correct == None:
         #    return@ask_questions statistics
         if is_answer_correct != None:
