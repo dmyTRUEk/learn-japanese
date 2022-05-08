@@ -211,10 +211,10 @@ class TestLength(Enum):
 def ask_question_and_check_answer(test: Test) -> bool | None:
     answer = input('\n'+test.message+'\nAnswer: ')
     match answer:
-        case test.answer:
-            print("Correct.")
         case Constants.COMMAND_STOP:
             return None
+        case test.answer:
+            print_colored("Correct.", fg=fg.GREEN)
         case _:
             print(f"WRONG! Correct answer is: {test.answer}")
     return answer == test.answer
