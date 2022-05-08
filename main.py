@@ -49,25 +49,26 @@ class TestLength(Enum):
     Endless = "Endless"
 
 
-
-def print_colored(*args, **kwargs):
-    BG: str = "bg"
-    FG: str = "fg"
-    if BG in kwargs:
-        print(kwargs[BG], end="")
-        del(kwargs[BG])
-    if FG in kwargs:
-        print(kwargs[FG], end="")
-        del(kwargs[FG])
-    print(*args, **kwargs)
-    print(Style.RESET_ALL, end="")
+def colorize(s: str, /, *, fg=None, bg=None) -> str:
+    is_fg: bool = fg is not None
+    is_bg: bool = bg is not None
+    return (
+        (fg if is_fg else "") +
+        (bg if is_bg else "") +
+        s +
+        (Style.RESET_ALL if (is_fg or is_bg) else "")
+    )
 
 
 def ask_questions(tests: list[Test], test_len: TestLength) -> tuple[list[bool], list[Test]]:
     statistics: list[bool] = []
     mistakes: list[Test] = []
 
-    def ask_question_and_check_answer_and_update_statistics(test: Test) -> bool:
+    def ask_check_update(test: Test) -> bool:
+        # this function will:
+        # 1. ask question
+        # 2. check answer
+        # 3. update statistics
         print()
         print(test.message_to_fmt.format(test.question))
 
@@ -83,13 +84,13 @@ def ask_questions(tests: list[Test], test_len: TestLength) -> tuple[list[bool], 
                 unreachable()
 
         if is_answered_correctly:
-            print_colored("Correct.", fg=fg.GREEN)
+            print(colorize("Correct.", fg=fg.GREEN))
         else:
             match test.answer:
                 case str(correct_answer):
-                    print_colored(f"WRONG! Correct answer is: {correct_answer}", fg=fg.RED)
+                    print(colorize(f"WRONG! Correct answer is: {correct_answer}", fg=fg.RED))
                 case list(correct_answers):
-                    print_colored(f"WRONG! Correct answers are: {correct_answers}", fg=fg.RED)
+                    print(colorize(f"WRONG! Correct answers are: {correct_answers}", fg=fg.RED))
                 case _:
                     unreachable()
             mistaken_test = deepcopy(test)
@@ -107,11 +108,11 @@ def ask_questions(tests: list[Test], test_len: TestLength) -> tuple[list[bool], 
             case TestLength.Endless:
                 while True:
                     for test in shuffled(tests):
-                        is_exited = ask_question_and_check_answer_and_update_statistics(test)
+                        is_exited = ask_check_update(test)
                         if is_exited: return (statistics, mistakes)
             case TestLength.OnceEverySymbol:
                 for test in shuffled(tests):
-                    is_exited = ask_question_and_check_answer_and_update_statistics(test)
+                    is_exited = ask_check_update(test)
                     if is_exited: return (statistics, mistakes)
             case TestLength.NSymbols:
                 assert(hasattr(test_len, "n"))
@@ -120,7 +121,7 @@ def ask_questions(tests: list[Test], test_len: TestLength) -> tuple[list[bool], 
                     if len(tests_shuffle) == 0:
                         tests_shuffle = shuffled(tests)
                     test = tests_shuffle.pop()
-                    is_exited = ask_question_and_check_answer_and_update_statistics(test)
+                    is_exited = ask_check_update(test)
                     if is_exited: return (statistics, mistakes)
             case _:
                 unreachable()
@@ -239,15 +240,12 @@ def print_statistics(statistics: list[bool]):
 
 
 def print_mistakes(mistakes: list[Test]):
-    print(f"\nTotal mistakes: ", end="")
-    print_colored(len(mistakes), end="", fg=fg.RED)
-    print(". Your mistakes:")
+    print(f"\nTotal mistakes: " + colorize(str(len(mistakes)), fg=fg.RED) + ". Your mistakes:")
     for (i, test) in enumerate(mistakes):
+        assert(test.user_answer is not None)
         print(f"{i+1}. {test.message_to_fmt.format(test.question)}")
-        print("   Correct answer: ", end="")
-        print_colored(test.answer, fg=fg.GREEN)
-        print("   Your    answer: ", end="")
-        print_colored(test.user_answer, fg=fg.RED)
+        print("   Correct answer: " + colorize(str(test.answer), fg=fg.GREEN))
+        print("   Your    answer: " + colorize(test.user_answer, fg=fg.RED))
 
 
 def main() -> None:
