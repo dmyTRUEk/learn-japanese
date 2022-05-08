@@ -2,7 +2,7 @@
 
 from japanese_symbols_classes import JapaneseLetter
 
-ALL_LETTERS: list[JapaneseLetter] = [
+KANA: list[JapaneseLetter] = [
     JapaneseLetter("a", "あ", "ア"),
     JapaneseLetter("i", "い", "イ"),
     JapaneseLetter("u", "う", "ウ"),

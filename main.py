@@ -13,8 +13,8 @@ from colorama import Style
 
 from enhance_enum import enhance_enum
 from extensions import unreachable, shuffled, avg, trim_by_first_line
-from kana import ALL_LETTERS
-from kanji import ALL_KANJI
+from kana import KANA
+from kanji import KANJI
 
 
 
@@ -24,21 +24,20 @@ class Constants:
 
 
 
-
 @enhance_enum
 class TestType(Enum):
     Hiragana = "Hiragana"
     Katakana = "Katakana"
-    KanaAll = "All Letters (Hiragana + Katakana)"
-    KanjiTranslation = "Kanji Translation"
-    KanjiTransliteration = "Kanji Transliteration"
-    KanjiAll = "All Kanji (Translation + Transliteration)"
-    All = "All (All Kana + All Kanji)"
+    Kana = "Kana: Hiragana + Katakana"
+    KanjiTranslate = "Kanji Translate"
+    KanjiWrite = "Kanji Write"
+    Kanji = "Kanji: Translation + Transliteration"
+    Everything = "Everything: Kana + Kanji"
 
 @enhance_enum
 class TestLength(Enum):
     OnceEverySymbol = "Once every symbol"
-    NSymbols = "N symbols"
+    CertainAmount = "Certain amount"
     Endless = "Endless"
 
 @dataclass
@@ -111,7 +110,7 @@ def ask_questions(tests: list[Test], test_len: TestLength) -> tuple[list[bool], 
                 for test in shuffled(tests):
                     is_exited = ask_check_update(test)
                     if is_exited: return (statistics, mistakes)
-            case TestLength.NSymbols:
+            case TestLength.CertainAmount:
                 assert(hasattr(test_len, "n"))
                 tests_shuffle: list[Test] = []
                 for _ in range(test_len.n):
@@ -135,9 +134,9 @@ def generate_tests(test_type: TestType) -> list[Test]:
             Test(
                 letter.hiragana,
                 letter.transliteration_to_latin,
-                "What is transliteration for {}?"
+                "Write {}"
             )
-            for letter in ALL_LETTERS
+            for letter in KANA
         ]
 
     def generate_tests_for_katakana() -> list[Test]:
@@ -145,9 +144,9 @@ def generate_tests(test_type: TestType) -> list[Test]:
             Test(
                 letter.katakana,
                 letter.transliteration_to_latin,
-                "What is transliteration for {}?"
+                "Write {}"
             )
-            for letter in ALL_LETTERS
+            for letter in KANA
         ]
 
     def generate_tests_for_kanji_translation() -> list[Test]:
@@ -155,9 +154,9 @@ def generate_tests(test_type: TestType) -> list[Test]:
             Test(
                 kanji.symbol,
                 kanji.translation_to_english,
-                "What is translation of {}?"
+                "Translate {}"
             )
-            for kanji in ALL_KANJI
+            for kanji in KANJI
         ]
 
     def generate_tests_for_kanji_transliteration() -> list[Test]:
@@ -165,9 +164,9 @@ def generate_tests(test_type: TestType) -> list[Test]:
             Test(
                 kanji.symbol,
                 kanji.transliteration_to_latin,
-                "What is transliteration of {}?"
+                "Write {}"
             )
-            for kanji in ALL_KANJI
+            for kanji in KANJI
         ]
 
     match test_type:
@@ -175,17 +174,17 @@ def generate_tests(test_type: TestType) -> list[Test]:
             tests += generate_tests_for_hiragana()
         case TestType.Katakana:
             tests += generate_tests_for_katakana()
-        case TestType.KanaAll:
+        case TestType.Kana:
             tests += generate_tests_for_hiragana()
             tests += generate_tests_for_katakana()
-        case TestType.KanjiTranslation:
+        case TestType.KanjiTranslate:
             tests += generate_tests_for_kanji_translation()
-        case TestType.KanjiTransliteration:
+        case TestType.KanjiWrite:
             tests += generate_tests_for_kanji_transliteration()
-        case TestType.KanjiAll:
+        case TestType.Kanji:
             tests += generate_tests_for_kanji_translation()
             tests += generate_tests_for_kanji_transliteration()
-        case TestType.All:
+        case TestType.Everything:
             tests += generate_tests_for_hiragana()
             tests += generate_tests_for_katakana()
             tests += generate_tests_for_kanji_translation()
@@ -219,7 +218,7 @@ def ask_test_len() -> TestLength:
         print(Constants.EXITING)
         sys_exit(0)
     test_len = TestLength.get_by_index(chosen_option)
-    if test_len == TestLength.NSymbols:
+    if test_len == TestLength.CertainAmount:
         test_len.n = int(input("How many times? "))
     return test_len
 
@@ -228,12 +227,12 @@ def print_statistics(statistics: list[bool]):
     match avg(statistics):
         case float(fraction):
             percentage = 100.0 * fraction
-            percentage_str = f"{percentage:.2f}%"
+            percentage_str = f"{percentage:.1f}%"
         case None:
             percentage_str = "--"
         case _:
             unreachable()
-    print(f"Correct percentage: {percentage_str}")
+    print(f"Percentage of correct answers: {percentage_str}")
 
 
 def print_mistakes(mistakes: list[Test]):
@@ -247,7 +246,7 @@ def print_mistakes(mistakes: list[Test]):
 
 def main() -> None:
     print(trim_by_first_line(f"""
-        Learn Japanese program by dmyTRUEk (v{__version__})
+        Learn Japanese by dmyTRUEk, v{__version__}
 
         To exit input `{Constants.COMMAND_STOP}` or press Ctrl+C.
     """))

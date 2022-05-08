@@ -2,7 +2,7 @@
 
 from japanese_symbols_classes import JapaneseKanji
 
-ALL_KANJI: list[JapaneseKanji] = [
+KANJI: list[JapaneseKanji] = [
     #JapaneseKanji("", "", ""),
 
     JapaneseKanji("一", "ichi", ["1", "one"]),
