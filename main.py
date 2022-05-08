@@ -177,14 +177,12 @@ ALL_LETTERS: list[JapaneseLetter] = [
 @dataclass
 class JapaneseKanji:
     symbol: str
-    # TODO: impl multuple answers
     transliteration_to_latin: str | list[str]
     translation_to_english: str | list[str]
 
 ALL_KANJI: list[JapaneseKanji] = [
     #JapaneseKanji("", "", ""),
 
-    # TODO: answer by numbers: 1-10
     JapaneseKanji("一", "ichi", ["1", "one"]),
     JapaneseKanji("二", "ni", ["2", "two"]),
     JapaneseKanji("三", "san", ["3", "three"]),
