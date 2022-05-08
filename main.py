@@ -28,8 +28,11 @@ def shuffled(l: list) -> list:
     random.shuffle(l_copy)
     return l_copy
 
-def avg(l: list) -> float:
-    return sum(l)/len(l)
+def avg(l: list) -> float | None:
+    if len(l) == 0:
+        return None
+    else:
+        return sum(l)/len(l)
 
 
 
@@ -331,8 +334,15 @@ def generate_tests(test_type: TestType) -> list[Test]:
 
 
 def print_statistics(statistics: list[bool]):
-    percentage = 100.0 * avg(statistics)
-    print(f"\nCorrect percentage: {percentage:.2f}%")
+    match avg(statistics):
+        case float(fraction):
+            percentage = 100.0 * fraction
+            percentage_str = f"{percentage:.2f}%"
+        case None:
+            percentage_str = "--"
+        case _:
+            unreachable()
+    print(f"\nCorrect percentage: {percentage_str}")
 
 
 def ask_test_type() -> TestType:
