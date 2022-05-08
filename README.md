@@ -4,5 +4,5 @@ Learn Japanese program by dmyTRUEk
 
 
 ## Todo:
-- colored correct/wrong
+- show mistakes after test
 
