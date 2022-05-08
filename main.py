@@ -14,6 +14,8 @@ from colorama import Fore as fg
 from colorama import Back as bg
 from colorama import Style
 
+import copy
+
 
 
 char: TypeAlias = str
@@ -215,7 +217,8 @@ class TestType(Enum):
 class Test:
     question: str
     answer: str
-    message: str
+    message_to_fmt: str
+    user_answer: None | str = None
 
 @enhance_enum
 class TestLength(Enum):
@@ -225,57 +228,55 @@ class TestLength(Enum):
 
 
 
-def ask_question_and_check_answer(test: Test) -> bool | None:
-    answer = input('\n'+test.message+'\nAnswer: ')
-    match answer:
-        case Constants.COMMAND_STOP:
-            return None
-        case test.answer:
-            print_colored("Correct.", fg=fg.GREEN)
-        case _:
-            print_colored(f"WRONG! Correct answer is: {test.answer}", fg=fg.RED)
-    return answer == test.answer
-
-
-def ask_questions(tests: list[Test], test_len: TestLength, test_len_n: None | int) -> list[bool]:
-    statistics = []
+def ask_questions(tests: list[Test], test_len: TestLength) -> tuple[list[bool], list[Test]]:
+    statistics: list[bool] = []
+    mistakes: list[Test] = []
 
     def ask_question_and_check_answer_and_update_statistics(test: Test) -> bool:
-        is_answer_correct = ask_question_and_check_answer(test)
+        print()
+        print(test.message_to_fmt.format(test.question))
+        answer = input("Answer: ")
+        match answer:
+            case Constants.COMMAND_STOP:
+                return True
+            case test.answer:
+                print_colored("Correct.", fg=fg.GREEN)
+            case _:
+                print_colored(f"WRONG! Correct answer is: {test.answer}", fg=fg.RED)
+                mistaken_test = copy.deepcopy(test)
+                mistaken_test.user_answer = answer
+                if mistaken_test not in mistakes:
+                    mistakes.append(mistaken_test)
+        statistics.append(answer == test.answer)
         # TODO?
-        #if is_answer_correct == None:
-        #    return@ask_questions statistics
-        if is_answer_correct != None:
-            statistics.append(is_answer_correct)
-        return is_answer_correct == None
+        # return@ask_questions statistics
+        return False
 
     try:
         match test_len:
             case TestLength.Endless:
-                assert(test_len_n == None)
                 while True:
                     for test in shuffled(tests):
                         is_exited = ask_question_and_check_answer_and_update_statistics(test)
-                        if is_exited: return statistics
+                        if is_exited: return (statistics, mistakes)
             case TestLength.OnceEverySymbol:
-                assert(test_len_n == None)
                 for test in shuffled(tests):
                     is_exited = ask_question_and_check_answer_and_update_statistics(test)
-                    if is_exited: return statistics
+                    if is_exited: return (statistics, mistakes)
             case TestLength.NSymbols:
-                assert(test_len_n != None)
+                assert(hasattr(test_len, "n"))
                 tests_shuffle: list[Test] = []
-                for _ in range(test_len_n):
+                for _ in range(test_len.n):
                     if len(tests_shuffle) == 0:
                         tests_shuffle = shuffled(tests)
                     test = tests_shuffle.pop()
                     is_exited = ask_question_and_check_answer_and_update_statistics(test)
-                    if is_exited: return statistics
+                    if is_exited: return (statistics, mistakes)
             case _:
                 unreachable()
     except KeyboardInterrupt:
         print(Constants.EXITING)
-    return statistics
+    return (statistics, mistakes)
 
 
 def generate_tests(test_type: TestType) -> list[Test]:
@@ -286,7 +287,7 @@ def generate_tests(test_type: TestType) -> list[Test]:
             Test(
                 letter.hiragana,
                 letter.transliteration_to_latin,
-                f"What is transliteration for {letter.hiragana}?"
+                "What is transliteration for {}?"
             )
             for letter in ALL_LETTERS
         ]
@@ -296,7 +297,7 @@ def generate_tests(test_type: TestType) -> list[Test]:
             Test(
                 letter.katakana,
                 letter.transliteration_to_latin,
-                f"What is transliteration for {letter.katakana}?"
+                "What is transliteration for {}?"
             )
             for letter in ALL_LETTERS
         ]
@@ -306,7 +307,7 @@ def generate_tests(test_type: TestType) -> list[Test]:
             Test(
                 kanji.symbol,
                 kanji.translation_to_english,
-                f"What is translation of {kanji.symbol}?"
+                "What is translation of {}?"
             )
             for kanji in ALL_KANJI
         ]
@@ -316,7 +317,7 @@ def generate_tests(test_type: TestType) -> list[Test]:
             Test(
                 kanji.symbol,
                 kanji.transliteration_to_latin,
-                f"What is transliteration of {kanji.symbol}?"
+                "What is transliteration of {}?"
             )
             for kanji in ALL_KANJI
         ]
@@ -345,18 +346,6 @@ def generate_tests(test_type: TestType) -> list[Test]:
     return tests
 
 
-def print_statistics(statistics: list[bool]):
-    match avg(statistics):
-        case float(fraction):
-            percentage = 100.0 * fraction
-            percentage_str = f"{percentage:.2f}%"
-        case None:
-            percentage_str = "--"
-        case _:
-            unreachable()
-    print(f"\nCorrect percentage: {percentage_str}")
-
-
 def ask_test_type() -> TestType:
     print("Available test types:")
     for (i, test_type) in enumerate(TestType):
@@ -370,7 +359,7 @@ def ask_test_type() -> TestType:
     return test_type
 
 
-def ask_test_len() -> tuple[TestLength, None | int]:
+def ask_test_len() -> TestLength:
     print("Available test lenghts:")
     for (i, test_type) in enumerate(TestLength):
         print(f"{i+1}) {test_type.value}")
@@ -381,11 +370,32 @@ def ask_test_len() -> tuple[TestLength, None | int]:
         sys_exit(0)
     test_len = TestLength.get_by_index(chosen_option)
     if test_len == TestLength.NSymbols:
-        n = int(input("How many times? "))
-    else:
-        n = None
-    return (test_len, n)
+        test_len.n = int(input("How many times? "))
+    return test_len
 
+
+def print_statistics(statistics: list[bool]):
+    match avg(statistics):
+        case float(fraction):
+            percentage = 100.0 * fraction
+            percentage_str = f"{percentage:.2f}%"
+        case None:
+            percentage_str = "--"
+        case _:
+            unreachable()
+    print(f"\nCorrect percentage: {percentage_str}")
+
+
+def print_mistakes(mistakes: list[Test]):
+    print(f"\nTotal mistakes: ", end="")
+    print_colored(len(mistakes), end="", fg=fg.RED)
+    print(". Yout mistakes:")
+    for (i, test) in enumerate(mistakes):
+        print(f"{i+1}. {test.message_to_fmt.format(test.question)}")
+        print("   Correct answer: ", end="")
+        print_colored(test.answer, fg=fg.GREEN)
+        print("   Your    answer: ", end="")
+        print_colored(test.user_answer, fg=fg.RED)
 
 
 def main() -> None:
@@ -395,13 +405,18 @@ def main() -> None:
         To exit input `{Constants.COMMAND_STOP}` or press Ctrl+C.
     """))
     print()
+
     test_type = ask_test_type()
-    test_len, test_len_n = ask_test_len()
+    test_len = ask_test_len()
 
     tests = generate_tests(test_type)
-    statistics = ask_questions(tests, test_len, test_len_n)
+    statistics, mistakes = ask_questions(tests, test_len)
 
+    if mistakes:
+        print_mistakes(mistakes)
     print_statistics(statistics)
+
+    print()
 
 
 
@@ -409,5 +424,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-    print()
 

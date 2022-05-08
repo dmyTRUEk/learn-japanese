@@ -4,5 +4,5 @@ Learn Japanese program by dmyTRUEk
 
 
 ## Todo:
-- show mistakes after test
+- Add more Kanji
 
