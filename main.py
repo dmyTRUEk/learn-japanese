@@ -19,7 +19,7 @@ from kanji import ALL_KANJI
 
 
 class Constants:
-    COMMAND_STOP: str = "exit;"
+    COMMAND_STOP: str = ";;"
     EXITING: str = "\nExiting..."
 
 
