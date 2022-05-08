@@ -239,7 +239,7 @@ class Test:
 @enhance_enum
 class TestLength(Enum):
     OnceEverySymbol = "Once every symbol"
-    NSymbols = "N symbol"
+    NSymbols = "N symbols"
     Endless = "Endless"
 
 
@@ -371,6 +371,8 @@ def generate_tests(test_type: TestType) -> list[Test]:
         case TestType.All:
             tests += generate_tests_for_hiragana()
             tests += generate_tests_for_katakana()
+            tests += generate_tests_for_kanji_translation()
+            tests += generate_tests_for_kanji_transliteration()
         case _:
             unreachable()
 
