@@ -176,22 +176,19 @@ ALL_SYMBOLS: list[JapaneseSymbol] = ALL_LETTERS + ALL_KANJI
 
 
 
-# TestTypeType: TypeAlias = collections.namedtuple("TestType", ["n", "name"])
-# class TestType:
-#     Hiragana             = TestTypeType(1, "Hiragana")
-#     Katakana             = TestTypeType(2, "Katakana")
-#     AllLetters           = TestTypeType(3, "All Letters (Hiragana + Katakana)")
-#     KanjiTranslation     = TestTypeType(4, "Kanji Translation")
-#     KanjiTransliteration = TestTypeType(5, "Kanji Transliteration")
-#     All                  = TestTypeType(6, "All (Kanji + Hiragana + Katakana)")
+def enhance_enum(cls):
+    assert(cls is not None)
+    def get_by_index(index: int):
+        assert(isinstance(index, int))
+        assert(0 <= index < len(cls))
+        return list(cls)[index]
+    setattr(cls, "get_by_index", get_by_index)
+    return cls
 
+
+
+@enhance_enum
 class TestType(Enum):
-    # enhance your enum
-    def get_size() -> int: return len(TestType._member_names_)
-    def get_by_index(index: int) -> "TestType":
-        assert(0 <= index < TestType.get_size())
-        # return TestType(TestType._member_names_[index])
-        return list(TestType)[index]
     Hiragana = "Hiragana"
     Katakana = "Katakana"
     KanaAll = "All Letters (Hiragana + Katakana)"
@@ -206,13 +203,8 @@ class Test:
     answer: str
     message: str
 
+@enhance_enum
 class TestLength(Enum):
-    # enhance your enum
-    def get_size() -> int: return len(TestLength._member_names_)
-    def get_by_index(index: int) -> "TestLength":
-        assert(0 <= index < TestLength.get_size())
-        # return TestLength(TestLength._member_names_[index])
-        return list(TestLength)[index]
     Endless = "Endless"
     OnceEverySymbol = "Once every symbol"
     NSymbols = "N symbol"
