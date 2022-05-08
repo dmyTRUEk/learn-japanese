@@ -35,6 +35,12 @@ class TestType(Enum):
     KanjiAll = "All Kanji (Translation + Transliteration)"
     All = "All (All Kana + All Kanji)"
 
+@enhance_enum
+class TestLength(Enum):
+    OnceEverySymbol = "Once every symbol"
+    NSymbols = "N symbols"
+    Endless = "Endless"
+
 @dataclass
 class Test:
     question: str
@@ -42,11 +48,14 @@ class Test:
     message_to_fmt: str
     user_answer: None | str = None
 
-@enhance_enum
-class TestLength(Enum):
-    OnceEverySymbol = "Once every symbol"
-    NSymbols = "N symbols"
-    Endless = "Endless"
+    def chech_answer(self, user_answer: str) -> bool:
+        match self.answer:
+            case str(correct_answer):
+                return user_answer == correct_answer
+            case list(correct_answers):
+                return user_answer in correct_answers
+            case _:
+                unreachable()
 
 
 def colorize(s: str, /, *, fg=None, bg=None) -> str:
@@ -75,30 +84,18 @@ def ask_questions(tests: list[Test], test_len: TestLength) -> tuple[list[bool], 
         user_answer = input("Answer: ")
         if user_answer == Constants.COMMAND_STOP: return True
 
-        match test.answer:
-            case str(correct_answer):
-                is_answered_correctly = (user_answer == correct_answer)
-            case list(correct_answers):
-                is_answered_correctly = (user_answer in correct_answers)
-            case _:
-                unreachable()
+        is_answered_correctly = test.chech_answer(user_answer)
 
         if is_answered_correctly:
             print(colorize("Correct.", fg=fg.GREEN))
         else:
-            match test.answer:
-                case str(correct_answer):
-                    print(colorize(f"WRONG! Correct answer is: {correct_answer}", fg=fg.RED))
-                case list(correct_answers):
-                    print(colorize(f"WRONG! Correct answers are: {correct_answers}", fg=fg.RED))
-                case _:
-                    unreachable()
+            print(colorize(f"WRONG! Correct answer: {test.answer}", fg=fg.RED))
             mistaken_test = deepcopy(test)
             mistaken_test.user_answer = user_answer
             if mistaken_test not in mistakes:
                 mistakes.append(mistaken_test)
 
-        statistics.append(user_answer == test.answer)
+        statistics.append(is_answered_correctly)
         # TODO?
         # return@ask_questions statistics
         return False
@@ -236,11 +233,11 @@ def print_statistics(statistics: list[bool]):
             percentage_str = "--"
         case _:
             unreachable()
-    print(f"\nCorrect percentage: {percentage_str}")
+    print(f"Correct percentage: {percentage_str}")
 
 
 def print_mistakes(mistakes: list[Test]):
-    print(f"\nTotal mistakes: " + colorize(str(len(mistakes)), fg=fg.RED) + ". Your mistakes:")
+    print(f"Total mistakes: " + colorize(str(len(mistakes)), fg=fg.RED) + ". Your mistakes:")
     for (i, test) in enumerate(mistakes):
         assert(test.user_answer is not None)
         print(f"{i+1}. {test.message_to_fmt.format(test.question)}")
@@ -257,13 +254,18 @@ def main() -> None:
     print()
 
     test_type = ask_test_type()
+    print()
     test_len = ask_test_len()
 
     tests = generate_tests(test_type)
     statistics, mistakes = ask_questions(tests, test_len)
 
+    print()
+    input("Press Enter to see results.")
     if mistakes:
+        print()
         print_mistakes(mistakes)
+    print()
     print_statistics(statistics)
 
     print()
