@@ -247,8 +247,11 @@ def ask_questions(tests: list[Test], test_len: TestLength, test_len_n: None | in
                     if is_exited: return statistics
             case TestLength.NSymbols:
                 assert(test_len_n != None)
-                # TODO: fix for `test_len_n` > `len(tests)`
-                for test in shuffled(tests)[:test_len_n]:
+                tests_shuffle: list[Test] = []
+                for _ in range(test_len_n):
+                    if len(tests_shuffle) == 0:
+                        tests_shuffle = shuffled(tests)
+                    test = tests_shuffle.pop()
                     is_exited = ask_question_and_check_answer_and_update_statistics(test)
                     if is_exited: return statistics
             case _:
