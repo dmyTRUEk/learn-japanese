@@ -1,6 +1,6 @@
 # Learn Japanese program by dmyTRUEk
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 from sys import exit as sys_exit
 
