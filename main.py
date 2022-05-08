@@ -2,6 +2,8 @@
 
 __version__ = "0.1.0"
 
+from sys import exit as sys_exit
+
 from dataclasses import dataclass
 from enum import Enum
 from typing import Callable, Iterable, TypeAlias
@@ -14,6 +16,7 @@ char: TypeAlias = str
 
 class Constants:
     STOP_SEQ: str = "exit"
+    EXITING: str = "\nExiting..."
 
 
 
@@ -170,6 +173,8 @@ ALL_KANJI: list[JapaneseKanji] = [
     JapaneseKanji("私", "watashi", "i"),
 ]
 
+
+
 JapaneseSymbol: TypeAlias = JapaneseLetter | JapaneseKanji
 
 ALL_SYMBOLS: list[JapaneseSymbol] = ALL_LETTERS + ALL_KANJI
@@ -235,26 +240,31 @@ def ask_questions(tests: list[Test], test_len: TestLength, test_len_n: None | in
             statistics.append(is_answer_correct)
         return is_answer_correct == None
 
-    match test_len:
-        case TestLength.Endless:
-            assert(test_len_n == None)
-            while True:
+    try:
+        match test_len:
+            case TestLength.Endless:
+                assert(test_len_n == None)
+                while True:
+                    for test in shuffled(tests):
+                        is_exited = ask_question_and_check_answer_and_update_statistics(test)
+                        if is_exited: return statistics
+            case TestLength.OnceEverySymbol:
+                assert(test_len_n == None)
                 for test in shuffled(tests):
                     is_exited = ask_question_and_check_answer_and_update_statistics(test)
                     if is_exited: return statistics
-        case TestLength.OnceEverySymbol:
-            assert(test_len_n == None)
-            for test in shuffled(tests):
-                is_exited = ask_question_and_check_answer_and_update_statistics(test)
-                if is_exited: return statistics
-        case TestLength.NSymbols:
-            assert(test_len_n != None)
-            # TODO: fix for `test_len_n` > `len(tests)`
-            for test in shuffled(tests)[:test_len_n]:
-                is_exited = ask_question_and_check_answer_and_update_statistics(test)
-                if is_exited: return statistics
-        case _:
-            unreachable()
+            case TestLength.NSymbols:
+                assert(test_len_n != None)
+                # TODO: fix for `test_len_n` > `len(tests)`
+                for test in shuffled(tests)[:test_len_n]:
+                    is_exited = ask_question_and_check_answer_and_update_statistics(test)
+                    if is_exited: return statistics
+            case _:
+                unreachable()
+    except KeyboardInterrupt:
+        print(Constants.EXITING)
+    except EOFError:
+        print(Constants.EXITING)
     return statistics
 
 
@@ -341,7 +351,14 @@ def ask_test_type() -> TestType:
     print("Available test types:")
     for (i, test_type) in enumerate(TestType):
         print(f"{i+1}) {test_type.value}")
-    chosen_option: int = int(input(f"Choose test type (1-{len(TestType)}): ")) - 1
+    try:
+        chosen_option: int = int(input(f"Choose test type (1-{len(TestType)}): ")) - 1
+    except KeyboardInterrupt:
+        print(Constants.EXITING)
+        sys_exit(0)
+    except EOFError:
+        print(Constants.EXITING)
+        sys_exit(0)
     test_type = TestType.get_by_index(chosen_option)
     return test_type
 
@@ -350,7 +367,14 @@ def ask_test_len() -> tuple[TestLength, None | int]:
     print("Available test lenghts:")
     for (i, test_type) in enumerate(TestLength):
         print(f"{i+1}) {test_type.value}")
-    chosen_option: int = int(input(f"Choose test lenght (1-{len(TestLength)}): ")) - 1
+    try:
+        chosen_option: int = int(input(f"Choose test lenght (1-{len(TestLength)}): ")) - 1
+    except KeyboardInterrupt:
+        print(Constants.EXITING)
+        sys_exit(0)
+    except EOFError:
+        print(Constants.EXITING)
+        sys_exit(0)
     test_len = TestLength.get_by_index(chosen_option)
     if test_len == TestLength.NSymbols:
         n = int(input("How many times? "))
