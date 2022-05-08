@@ -41,12 +41,6 @@ def avg(l: list) -> float | None:
 
 def join_lines(lines: Iterable[str]) -> str:
     return '\n'.join(lines)
-    # print(list(lines))
-    # res: str = ""
-    # for (i, line) in enumerate(lines):
-    #     print(f"{i=}, {line=}")
-    #     res += ('\n' if i != 0 else "") + line
-    # return res
 
 def count_start(string: str, character: char=' ') -> int:
     for (i, c) in enumerate(string):
@@ -59,9 +53,7 @@ def map_by_line(function: Callable[[str], str], string: str) -> str:
     return join_lines(map(function, string.splitlines()))
 
 def trim_by_first_line(string: str) -> str:
-    # print(string.splitlines())
     string = join_lines(string.splitlines()[1:-1])
-    # print(string.splitlines())
     first_line_shift = count_start(string.splitlines()[0])
     return map_by_line(lambda line: line[first_line_shift:], string)
 
