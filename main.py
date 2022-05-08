@@ -341,7 +341,7 @@ def ask_test_type() -> TestType:
     print("Available test types:")
     for (i, test_type) in enumerate(TestType):
         print(f"{i+1}) {test_type.value}")
-    chosen_option: int = int(input(f"Choose test type (1-{TestType.get_size()}): ")) - 1
+    chosen_option: int = int(input(f"Choose test type (1-{len(TestType)}): ")) - 1
     test_type = TestType.get_by_index(chosen_option)
     return test_type
 
@@ -350,7 +350,7 @@ def ask_test_len() -> tuple[TestLength, None | int]:
     print("Available test lenghts:")
     for (i, test_type) in enumerate(TestLength):
         print(f"{i+1}) {test_type.value}")
-    chosen_option: int = int(input(f"Choose test lenght (1-{TestLength.get_size()}): ")) - 1
+    chosen_option: int = int(input(f"Choose test lenght (1-{len(TestLength)}): ")) - 1
     test_len = TestLength.get_by_index(chosen_option)
     if test_len == TestLength.NSymbols:
         n = int(input("How many times? "))
