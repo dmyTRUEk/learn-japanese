@@ -15,7 +15,7 @@ import random
 char: TypeAlias = str
 
 class Constants:
-    STOP_SEQ: str = "exit"
+    COMMAND_STOP: str = "exit;"
     EXITING: str = "\nExiting..."
 
 
@@ -221,7 +221,7 @@ def ask_question_and_check_answer(test: Test) -> bool | None:
     match answer:
         case test.answer:
             print("Correct.")
-        case Constants.STOP_SEQ:
+        case Constants.COMMAND_STOP:
             return None
         case _:
             print(f"WRONG! Correct answer is: {test.answer}")
@@ -262,8 +262,6 @@ def ask_questions(tests: list[Test], test_len: TestLength, test_len_n: None | in
             case _:
                 unreachable()
     except KeyboardInterrupt:
-        print(Constants.EXITING)
-    except EOFError:
         print(Constants.EXITING)
     return statistics
 
@@ -356,9 +354,6 @@ def ask_test_type() -> TestType:
     except KeyboardInterrupt:
         print(Constants.EXITING)
         sys_exit(0)
-    except EOFError:
-        print(Constants.EXITING)
-        sys_exit(0)
     test_type = TestType.get_by_index(chosen_option)
     return test_type
 
@@ -370,9 +365,6 @@ def ask_test_len() -> tuple[TestLength, None | int]:
     try:
         chosen_option: int = int(input(f"Choose test lenght (1-{len(TestLength)}): ")) - 1
     except KeyboardInterrupt:
-        print(Constants.EXITING)
-        sys_exit(0)
-    except EOFError:
         print(Constants.EXITING)
         sys_exit(0)
     test_len = TestLength.get_by_index(chosen_option)
@@ -388,7 +380,7 @@ def main() -> None:
     print(trim_by_first_line(f"""
         Learn Japanese program by dmyTRUEk (v{__version__})
 
-        To exit input `{Constants.STOP_SEQ}`.
+        To exit input `{Constants.COMMAND_STOP}` or press Ctrl+C.
     """))
     print()
     test_type = ask_test_type()
