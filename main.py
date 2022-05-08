@@ -2,220 +2,26 @@
 
 __version__ = "0.3.0"
 
-from sys import exit as sys_exit
-
+from copy import deepcopy
 from dataclasses import dataclass
 from enum import Enum
-from typing import Callable, Iterable, TypeAlias
-
-import random
+from sys import exit as sys_exit
 
 from colorama import Fore as fg
-from colorama import Back as bg
+#from colorama import Back as bg
 from colorama import Style
 
-import copy
+from enhance_enum import enhance_enum
+from extensions import unreachable, shuffled, avg, trim_by_first_line
+from kana import ALL_LETTERS
+from kanji import ALL_KANJI
 
 
-
-char: TypeAlias = str
 
 class Constants:
     COMMAND_STOP: str = "exit;"
     EXITING: str = "\nExiting..."
 
-
-
-class UnreachableException(Exception): pass
-def unreachable(): raise UnreachableException("This code must be unreachable!")
-def todo(): raise NotImplementedError()
-
-
-
-def shuffled(l: list) -> list:
-    l_copy = l.copy()
-    random.shuffle(l_copy)
-    return l_copy
-
-def avg(l: list) -> float | None:
-    if len(l) == 0:
-        return None
-    else:
-        return sum(l)/len(l)
-
-
-
-def join_lines(lines: Iterable[str]) -> str:
-    return '\n'.join(lines)
-
-def count_start(string: str, character: char=' ') -> int:
-    for (i, c) in enumerate(string):
-        if c != character:
-            return i
-    else:
-        return len(string)
-
-def map_by_line(function: Callable[[str], str], string: str) -> str:
-    return join_lines(map(function, string.splitlines()))
-
-def trim_by_first_line(string: str) -> str:
-    string = join_lines(string.splitlines()[1:-1])
-    first_line_shift = count_start(string.splitlines()[0])
-    return map_by_line(lambda line: line[first_line_shift:], string)
-
-
-
-def print_colored(*args, **kwargs):
-    BG: str = "bg"
-    FG: str = "fg"
-    if BG in kwargs:
-        print(kwargs[BG], end="")
-        del(kwargs[BG])
-    if FG in kwargs:
-        print(kwargs[FG], end="")
-        del(kwargs[FG])
-    print(*args, **kwargs)
-    print(Style.RESET_ALL, end="")
-
-
-@dataclass
-class JapaneseLetter:
-    transliteration_to_latin: str
-    hiragana: str
-    katakana: str
-
-ALL_LETTERS: list[JapaneseLetter] = [
-    JapaneseLetter("a", "あ", "ア"),
-    JapaneseLetter("i", "い", "イ"),
-    JapaneseLetter("u", "う", "ウ"),
-    JapaneseLetter("e", "え", "エ"),
-    JapaneseLetter("o", "お", "オ"),
-    JapaneseLetter("n", "ん", "ン"),
-
-    JapaneseLetter("ka", "か", "カ"),
-    JapaneseLetter("ki", "き", "キ"),
-    JapaneseLetter("ku", "く", "ク"),
-    JapaneseLetter("ke", "け", "ケ"),
-    JapaneseLetter("ko", "こ", "コ"),
-
-    JapaneseLetter("ga", "が", "ガ"),
-    JapaneseLetter("gi", "ぎ", "ギ"),
-    JapaneseLetter("gu", "ぐ", "グ"),
-    JapaneseLetter("ge", "げ", "ゲ"),
-    JapaneseLetter("go", "ご", "ゴ"),
-
-    JapaneseLetter("sa", "さ", "サ"),
-    JapaneseLetter("shi", "し", "シ"),
-    JapaneseLetter("su", "す", "ス"),
-    JapaneseLetter("se", "せ", "セ"),
-    JapaneseLetter("so", "そ", "ソ"),
-
-    JapaneseLetter("za", "ざ", "ザ"),
-    JapaneseLetter("zhi", "じ", "ジ"),
-    JapaneseLetter("zu", "ず", "ズ"),
-    JapaneseLetter("ze", "ぜ", "ゼ"),
-    JapaneseLetter("zo", "ぞ", "ゾ"),
-
-    JapaneseLetter("ta", "た", "タ"),
-    JapaneseLetter("chi", "ち", "チ"),
-    JapaneseLetter("tsu", "つ", "ツ"),
-    JapaneseLetter("te", "て", "テ"),
-    JapaneseLetter("to", "と", "ト"),
-
-    #TODO?: di, du -> ヂ ヅ 
-    JapaneseLetter("da", "だ", "ダ"),
-    JapaneseLetter("de", "で", "デ"),
-    JapaneseLetter("do", "ど", "ド"),
-
-    JapaneseLetter("na", "な", "ナ"),
-    JapaneseLetter("ni", "に", "ニ"),
-    JapaneseLetter("nu", "ぬ", "ヌ"),
-    JapaneseLetter("ne", "ね", "ネ"),
-    JapaneseLetter("no", "の", "ノ"),
-
-    JapaneseLetter("ha", "は", "ハ"),
-    JapaneseLetter("hi", "ひ", "ヒ"),
-    JapaneseLetter("fu", "ふ", "フ"),
-    JapaneseLetter("he", "へ", "ヘ"),
-    JapaneseLetter("ho", "ほ", "ホ"),
-
-    JapaneseLetter("ba", "ば", "バ"),
-    JapaneseLetter("bi", "び", "ビ"),
-    JapaneseLetter("bu", "ぶ", "ブ"),
-    JapaneseLetter("be", "べ", "ベ"),
-    JapaneseLetter("bo", "ぼ", "ボ"),
-
-    JapaneseLetter("pa", "ぱ", "パ"),
-    JapaneseLetter("pi", "ぴ", "ピ"),
-    JapaneseLetter("pu", "ぷ", "プ"),
-    JapaneseLetter("pe", "ぺ", "ペ"),
-    JapaneseLetter("po", "ぽ", "ポ"),
-
-    JapaneseLetter("ma", "ま", "マ"),
-    JapaneseLetter("mi", "み", "ミ"),
-    JapaneseLetter("mu", "む", "ム"),
-    JapaneseLetter("me", "め", "メ"),
-    JapaneseLetter("mo", "も", "モ"),
-
-    JapaneseLetter("ra", "ら", "ラ"),
-    JapaneseLetter("ri", "り", "リ"),
-    JapaneseLetter("ru", "る", "ル"),
-    JapaneseLetter("re", "れ", "レ"),
-    JapaneseLetter("ro", "ろ", "ロ"),
-
-    JapaneseLetter("ya", "や", "ヤ"),
-    JapaneseLetter("yu", "ゆ", "ユ"),
-    JapaneseLetter("yo", "よ", "ヨ"),
-
-    #TODO?: wi -> ヰ,   we -> ヱ
-    JapaneseLetter("wa", "わ", "ワ"),
-    JapaneseLetter("O", "を", "ヲ"),
-]
-
-
-
-@dataclass
-class JapaneseKanji:
-    symbol: str
-    transliteration_to_latin: str | list[str]
-    translation_to_english: str | list[str]
-
-ALL_KANJI: list[JapaneseKanji] = [
-    #JapaneseKanji("", "", ""),
-
-    JapaneseKanji("一", "ichi", ["1", "one"]),
-    JapaneseKanji("二", "ni", ["2", "two"]),
-    JapaneseKanji("三", "san", ["3", "three"]),
-    JapaneseKanji("四", ["yon", "shi"], ["4", "four"]),
-    JapaneseKanji("五", "go", ["5", "five"]),
-    JapaneseKanji("六", "roku", ["6", "six"]),
-    JapaneseKanji("七", ["shichi", "nana"], ["7", "seven"]),
-    JapaneseKanji("八", "hachi", ["8", "eight"]),
-    JapaneseKanji("九", "kyu", ["9", "nine"]),
-    JapaneseKanji("十", "ju", ["10", "ten"]),
-    JapaneseKanji("百", "hyaku", ["100", "hundred"]),
-    JapaneseKanji("千", "sen", ["1000", "thousand", "1_000"]),
-    JapaneseKanji("万", "man", ["10000", "ten thousand", "10_000"]),
-
-    JapaneseKanji("私", "watashi", "i"),
-]
-
-
-
-JapaneseSymbol: TypeAlias = JapaneseLetter | JapaneseKanji
-
-ALL_SYMBOLS: list[JapaneseSymbol] = ALL_LETTERS + ALL_KANJI
-
-
-
-def enhance_enum(cls):
-    assert(cls is not None)
-    def get_by_index(index: int):
-        assert(isinstance(index, int))
-        assert(0 <= index < len(cls))
-        return list(cls)[index]
-    setattr(cls, "get_by_index", get_by_index)
-    return cls
 
 
 
@@ -242,6 +48,19 @@ class TestLength(Enum):
     NSymbols = "N symbols"
     Endless = "Endless"
 
+
+
+def print_colored(*args, **kwargs):
+    BG: str = "bg"
+    FG: str = "fg"
+    if BG in kwargs:
+        print(kwargs[BG], end="")
+        del(kwargs[BG])
+    if FG in kwargs:
+        print(kwargs[FG], end="")
+        del(kwargs[FG])
+    print(*args, **kwargs)
+    print(Style.RESET_ALL, end="")
 
 
 def ask_questions(tests: list[Test], test_len: TestLength) -> tuple[list[bool], list[Test]]:
@@ -273,7 +92,7 @@ def ask_questions(tests: list[Test], test_len: TestLength) -> tuple[list[bool], 
                     print_colored(f"WRONG! Correct answers are: {correct_answers}", fg=fg.RED)
                 case _:
                     unreachable()
-            mistaken_test = copy.deepcopy(test)
+            mistaken_test = deepcopy(test)
             mistaken_test.user_answer = user_answer
             if mistaken_test not in mistakes:
                 mistakes.append(mistaken_test)
