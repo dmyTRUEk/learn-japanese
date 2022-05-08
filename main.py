@@ -178,26 +178,26 @@ ALL_LETTERS: list[JapaneseLetter] = [
 class JapaneseKanji:
     symbol: str
     # TODO: impl multuple answers
-    transliteration_to_latin: str
-    translation_to_english: str
+    transliteration_to_latin: str | list[str]
+    translation_to_english: str | list[str]
 
 ALL_KANJI: list[JapaneseKanji] = [
     #JapaneseKanji("", "", ""),
 
     # TODO: answer by numbers: 1-10
-    JapaneseKanji("一", "ichi", "one"),
-    JapaneseKanji("二", "ni", "two"),
-    JapaneseKanji("三", "san", "three"),
-    JapaneseKanji("四", "yon", "four"), # TODO: shi
-    JapaneseKanji("五", "go", "five"),
-    JapaneseKanji("六", "roku", "six"),
-    JapaneseKanji("七", "shichi", "seven"), # TODO: nana
-    JapaneseKanji("八", "hachi", "eight"),
-    JapaneseKanji("九", "kyu", "nine"),
-    JapaneseKanji("十", "ju", "ten"),
-    JapaneseKanji("百", "hyaku", "hundred"),
-    JapaneseKanji("千", "sen", "thousand"),
-    JapaneseKanji("万", "man", "ten thousand"),
+    JapaneseKanji("一", "ichi", ["1", "one"]),
+    JapaneseKanji("二", "ni", ["2", "two"]),
+    JapaneseKanji("三", "san", ["3", "three"]),
+    JapaneseKanji("四", ["yon", "shi"], ["4", "four"]),
+    JapaneseKanji("五", "go", ["5", "five"]),
+    JapaneseKanji("六", "roku", ["6", "six"]),
+    JapaneseKanji("七", ["shichi", "nana"], ["7", "seven"]),
+    JapaneseKanji("八", "hachi", ["8", "eight"]),
+    JapaneseKanji("九", "kyu", ["9", "nine"]),
+    JapaneseKanji("十", "ju", ["10", "ten"]),
+    JapaneseKanji("百", "hyaku", ["100", "hundred"]),
+    JapaneseKanji("千", "sen", ["1000", "thousand", "1_000"]),
+    JapaneseKanji("万", "man", ["10000", "ten thousand", "10_000"]),
 
     JapaneseKanji("私", "watashi", "i"),
 ]
@@ -234,15 +234,15 @@ class TestType(Enum):
 @dataclass
 class Test:
     question: str
-    answer: str
+    answer: str | list[str]
     message_to_fmt: str
     user_answer: None | str = None
 
 @enhance_enum
 class TestLength(Enum):
-    Endless = "Endless"
     OnceEverySymbol = "Once every symbol"
     NSymbols = "N symbol"
+    Endless = "Endless"
 
 
 
@@ -253,19 +253,28 @@ def ask_questions(tests: list[Test], test_len: TestLength) -> tuple[list[bool], 
     def ask_question_and_check_answer_and_update_statistics(test: Test) -> bool:
         print()
         print(test.message_to_fmt.format(test.question))
-        answer = input("Answer: ")
-        match answer:
-            case Constants.COMMAND_STOP:
-                return True
-            case test.answer:
-                print_colored("Correct.", fg=fg.GREEN)
+
+        user_answer = input("Answer: ")
+        if user_answer == Constants.COMMAND_STOP: return True
+
+        match test.answer:
+            case str(correct_answer):
+                is_answered_correctly = (user_answer == correct_answer)
+            case list(correct_answers):
+                is_answered_correctly = (user_answer in correct_answers)
             case _:
-                print_colored(f"WRONG! Correct answer is: {test.answer}", fg=fg.RED)
-                mistaken_test = copy.deepcopy(test)
-                mistaken_test.user_answer = answer
-                if mistaken_test not in mistakes:
-                    mistakes.append(mistaken_test)
-        statistics.append(answer == test.answer)
+                unreachable()
+
+        if is_answered_correctly:
+            print_colored("Correct.", fg=fg.GREEN)
+        else:
+            print_colored(f"WRONG! Correct answer is: {test.answer}", fg=fg.RED)
+            mistaken_test = copy.deepcopy(test)
+            mistaken_test.user_answer = user_answer
+            if mistaken_test not in mistakes:
+                mistakes.append(mistaken_test)
+
+        statistics.append(user_answer == test.answer)
         # TODO?
         # return@ask_questions statistics
         return False
@@ -407,7 +416,7 @@ def print_statistics(statistics: list[bool]):
 def print_mistakes(mistakes: list[Test]):
     print(f"\nTotal mistakes: ", end="")
     print_colored(len(mistakes), end="", fg=fg.RED)
-    print(". Yout mistakes:")
+    print(". Your mistakes:")
     for (i, test) in enumerate(mistakes):
         print(f"{i+1}. {test.message_to_fmt.format(test.question)}")
         print("   Correct answer: ", end="")
