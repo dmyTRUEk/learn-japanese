@@ -10,6 +10,10 @@ from typing import Callable, Iterable, TypeAlias
 
 import random
 
+from colorama import Fore as fg
+from colorama import Back as bg
+from colorama import Style
+
 
 
 char: TypeAlias = str
@@ -57,6 +61,19 @@ def trim_by_first_line(string: str) -> str:
     first_line_shift = count_start(string.splitlines()[0])
     return map_by_line(lambda line: line[first_line_shift:], string)
 
+
+
+def print_colored(*args, **kwargs):
+    BG: str = "bg"
+    FG: str = "fg"
+    if BG in kwargs:
+        print(kwargs[BG], end="")
+        del(kwargs[BG])
+    if FG in kwargs:
+        print(kwargs[FG], end="")
+        del(kwargs[FG])
+    print(*args, **kwargs)
+    print(Style.RESET_ALL, end="")
 
 
 @dataclass
@@ -216,7 +233,7 @@ def ask_question_and_check_answer(test: Test) -> bool | None:
         case test.answer:
             print_colored("Correct.", fg=fg.GREEN)
         case _:
-            print(f"WRONG! Correct answer is: {test.answer}")
+            print_colored(f"WRONG! Correct answer is: {test.answer}", fg=fg.RED)
     return answer == test.answer
 
 
