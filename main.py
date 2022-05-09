@@ -156,7 +156,11 @@ def main() -> None:
     statistics, mistakes = run_test(tests, test_len)
 
     print()
-    input("Press Enter to see results.")
+    try:
+        input("Press Enter or Ctrl+C to see results.")
+    except KeyboardInterrupt:
+        pass
+
     if mistakes:
         print()
         print_mistakes(mistakes)
