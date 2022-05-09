@@ -17,8 +17,11 @@ from tests import Test, TestLength, TestType, generate_tests
 
 
 class Constants:
-    COMMAND_STOP: str = ";;"
-    EXITING: str = "\nExiting..."
+    COMMAND_STOP : str = ";;"
+    EXITING      : str = "\nExiting..."
+    PROMPT_ANSWER: str = "Answer: "
+    CORRECT      : str = "Correct."
+    WRONG_TO_FMT : str = "WRONG! Correct answer: {}"
 
 
 
@@ -43,23 +46,23 @@ def run_test(tests: list[Test], test_len: TestLength) -> tuple[list[bool], list[
         # 2. check answer
         # 3. update statistics
         print()
-        print(test.message_to_fmt.format(test.question))
+        print(test.get_message())
 
-        user_answer = input("Answer: ")
+        user_answer = input(Constants.PROMPT_ANSWER)
         if user_answer == Constants.COMMAND_STOP: return True
 
         is_answered_correctly = test.chech_answer(user_answer)
+        statistics.append(is_answered_correctly)
 
         if is_answered_correctly:
-            print(colorize("Correct.", fg=fg.GREEN))
+            print(colorize(Constants.CORRECT, fg=fg.GREEN))
         else:
-            print(colorize(f"WRONG! Correct answer: {test.answer}", fg=fg.RED))
+            print(colorize(Constants.WRONG_TO_FMT.format(test.answer), fg=fg.RED))
             mistaken_test = deepcopy(test)
             mistaken_test.user_answer = user_answer
             if mistaken_test not in mistakes:
                 mistakes.append(mistaken_test)
 
-        statistics.append(is_answered_correctly)
         # TODO?
         # return@ask_questions statistics
         return False
@@ -135,7 +138,7 @@ def print_mistakes(mistakes: list[Test]):
     print(f"Total mistakes: " + colorize(str(len(mistakes)), fg=fg.RED) + ". Your mistakes:")
     for (i, test) in enumerate(mistakes):
         assert(test.user_answer is not None)
-        print(f"{i+1}. {test.message_to_fmt.format(test.question)}")
+        print(f"{i+1}. {test.get_message()}")
         print("   Correct answer: " + colorize(str(test.answer), fg=fg.GREEN))
         print("   Your    answer: " + colorize(test.user_answer, fg=fg.RED))
 

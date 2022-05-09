@@ -2,13 +2,17 @@
 Tests, Test Types, Test Lengths
 """
 
-from dataclasses import dataclass
 from enhance_enum import enhance_enum
 from enum import Enum
 from extensions import unreachable
-from kana import KANA
-from kanji import KANJI
+from kana import LETTERS
+from kanji import WORDS
 
+
+
+class Constants:
+    TRANSLATE_TO_FMT: str = "Translate {}"
+    SPELL_TO_FMT: str = "Spell {}"
 
 
 @enhance_enum
@@ -16,9 +20,9 @@ class TestType(Enum):
     Hiragana = "Hiragana"
     Katakana = "Katakana"
     Kana = "Kana: Hiragana + Katakana"
-    KanjiTranslate = "Kanji Translate"
-    KanjiWrite = "Kanji Write"
-    Kanji = "Kanji: Translation + Transliteration"
+    KanjiTranslate = "Kanji Translation"
+    KanjiSpell = "Kanji Spelling"
+    Kanji = "Kanji: Translation + Spelling"
     Everything = "Everything: Kana + Kanji"
 
 
@@ -29,12 +33,28 @@ class TestLength(Enum):
     Endless = "Endless"
 
 
-@dataclass
 class Test:
-    question: str
+    _message_to_fmt: str
+    _question: str
     answer: str | list[str]
-    message_to_fmt: str
+    description: None | str = None
     user_answer: None | str = None
+
+    def __init__(
+            self,
+            message_to_fmt: str,
+            question: str,
+            answer: str | list[str],
+            /, *,
+            desc: None | str = None
+            ):
+        self._message_to_fmt = message_to_fmt
+        self._question = question
+        self.answer = answer
+        self.description = desc
+
+    def get_message(self) -> str:
+        return self._message_to_fmt.format(self._question)
 
     def chech_answer(self, user_answer: str) -> bool:
         match self.answer:
@@ -53,41 +73,42 @@ def generate_tests(test_type: TestType) -> list[Test]:
     def generate_tests_for_hiragana() -> list[Test]:
         return [
             Test(
+                Constants.SPELL_TO_FMT,
                 letter.hiragana,
-                letter.transliteration_to_latin,
-                "Write {}"
+                letter.latin_spelling,
             )
-            for letter in KANA
+            for letter in LETTERS
         ]
 
     def generate_tests_for_katakana() -> list[Test]:
         return [
             Test(
+                Constants.SPELL_TO_FMT,
                 letter.katakana,
-                letter.transliteration_to_latin,
-                "Write {}"
+                letter.latin_spelling,
             )
-            for letter in KANA
+            for letter in LETTERS
         ]
 
     def generate_tests_for_kanji_translation() -> list[Test]:
         return [
             Test(
+                Constants.TRANSLATE_TO_FMT,
                 kanji.symbol,
-                kanji.translation_to_english,
-                "Translate {}"
+                kanji.translation,
             )
-            for kanji in KANJI
+            for kanji in WORDS
         ]
 
     def generate_tests_for_kanji_transliteration() -> list[Test]:
         return [
             Test(
+                Constants.SPELL_TO_FMT,
                 kanji.symbol,
-                kanji.transliteration_to_latin,
-                "Write {}"
+                kanji.latin_spelling,
             )
-            for kanji in KANJI
+            for kanji in WORDS
+            if kanji.latin_spelling is not None
         ]
 
     match test_type:
@@ -100,7 +121,7 @@ def generate_tests(test_type: TestType) -> list[Test]:
             tests += generate_tests_for_katakana()
         case TestType.KanjiTranslate:
             tests += generate_tests_for_kanji_translation()
-        case TestType.KanjiWrite:
+        case TestType.KanjiSpell:
             tests += generate_tests_for_kanji_transliteration()
         case TestType.Kanji:
             tests += generate_tests_for_kanji_translation()

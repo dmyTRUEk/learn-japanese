@@ -2,25 +2,25 @@
 Kanji and Words
 """
 
-from japanese_symbols_classes import JapaneseKanji
+from japanese_symbols_classes import JapaneseWord
 
-KANJI: list[JapaneseKanji] = [
-    #JapaneseKanji("", "", ""),
+WORDS: list[JapaneseWord] = [
+    JapaneseWord("一", ["1", "one"], ls="ichi"),
+    JapaneseWord("二", ["2", "two"], ls="ni"),
+    JapaneseWord("三", ["3", "three"], ls="san"),
+    JapaneseWord("四", ["4", "four"], ls=["yon", "shi"]),
+    JapaneseWord("五", ["5", "five"], ls="go"),
+    JapaneseWord("六", ["6", "six"], ls="roku"),
+    JapaneseWord("七", ["7", "seven"], ls=["shichi", "nana"]),
+    JapaneseWord("八", ["8", "eight"], ls="hachi"),
+    JapaneseWord("九", ["9", "nine"], ls=["ku", "kyu"]),
+    JapaneseWord("十", ["10", "ten"], ls="jyu"),
+    JapaneseWord("百", ["100", "hundred"], ls="hyaku"),
+    JapaneseWord("千", ["1000", "thousand", "1_000"], ls="sen"),
+    JapaneseWord("万", ["10000", "ten thousand", "10_000", "ten thousands"], ls="man"),
 
-    JapaneseKanji("一", "ichi", ["1", "one"]),
-    JapaneseKanji("二", "ni", ["2", "two"]),
-    JapaneseKanji("三", "san", ["3", "three"]),
-    JapaneseKanji("四", ["yon", "shi"], ["4", "four"]),
-    JapaneseKanji("五", "go", ["5", "five"]),
-    JapaneseKanji("六", "roku", ["6", "six"]),
-    JapaneseKanji("七", ["shichi", "nana"], ["7", "seven"]),
-    JapaneseKanji("八", "hachi", ["8", "eight"]),
-    JapaneseKanji("九", ["ku", "kyu"], ["9", "nine"]),
-    JapaneseKanji("十", "jyu", ["10", "ten"]),
-    JapaneseKanji("百", "hyaku", ["100", "hundred"]),
-    JapaneseKanji("千", "sen", ["1000", "thousand", "1_000"]),
-    JapaneseKanji("万", "man", ["10000", "ten thousand", "10_000"]),
+    JapaneseWord("私", "i", ls="watashi"),
 
-    JapaneseKanji("私", "watashi", "i"),
+    #JapaneseWord("", "", ks=""),
 ]
 
