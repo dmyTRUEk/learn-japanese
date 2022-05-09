@@ -7,9 +7,9 @@ __version__ = "0.3.3"
 from copy import deepcopy
 from sys import exit as sys_exit
 
+from colorama import Style
 from colorama import Fore as fg
 #from colorama import Back as bg
-from colorama import Style
 
 from extensions import unreachable, shuffled, avg, trim_by_first_line
 from tests import Test, TestLength, TestType, generate_tests
