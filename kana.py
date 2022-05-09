@@ -1,4 +1,6 @@
-# This file with all Hiragana and Katakana
+"""
+Kana (Hiragana + Katakana)
+"""
 
 from japanese_symbols_classes import JapaneseLetter
 

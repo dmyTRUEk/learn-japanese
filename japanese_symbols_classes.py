@@ -1,4 +1,6 @@
-# This is Japanese Letters and Kanji classes
+"""
+Kana and Kanji classes
+"""
 
 from dataclasses import dataclass
 from typing import TypeAlias

@@ -1,4 +1,6 @@
-# This is file with Kanji
+"""
+Kanji and Words
+"""
 
 from japanese_symbols_classes import JapaneseKanji
 

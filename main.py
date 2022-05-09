@@ -1,4 +1,6 @@
-# Learn Japanese program by dmyTRUEk
+"""
+Learn Japanese program by dmyTRUEk
+"""
 
 __version__ = "0.3.2"
 
