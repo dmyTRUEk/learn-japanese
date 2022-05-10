@@ -2,9 +2,9 @@
 Kanji and Words
 """
 
-from japanese_symbols_classes import JapaneseWord
+from kanji_class import JapaneseWord
 
-WORDS: list[JapaneseWord] = [
+JAPANESE_WORDS: list[JapaneseWord] = [
     JapaneseWord("一", ["1", "one"], ls="ichi"),
     JapaneseWord("二", ["2", "two"], ls="ni"),
     JapaneseWord("三", ["3", "three"], ls="san"),

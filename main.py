@@ -11,8 +11,8 @@ from colorama import Style
 from colorama import Fore as fg
 #from colorama import Back as bg
 
-from extensions import unreachable, shuffled, avg, trim_by_first_line
-from tests import Test, TestLength, TestType, generate_tests
+from extensions import unreachable, avg, trim_by_first_line
+from tests import Test, TestLength, TestType, generate_tests_certain_amount, generate_tests_endless, generate_tests_once
 
 
 
@@ -36,7 +36,7 @@ def colorize(s: str, /, *, fg=None, bg=None) -> str:
     )
 
 
-def run_test(tests: list[Test], test_len: TestLength) -> tuple[list[bool], list[Test]]:
+def run_test(test_type: TestType, test_len: TestLength) -> tuple[list[bool], list[Test]]:
     statistics: list[bool] = []
     mistakes: list[Test] = []
 
@@ -69,29 +69,31 @@ def run_test(tests: list[Test], test_len: TestLength) -> tuple[list[bool], list[
 
     try:
         match test_len:
-            case TestLength.Endless:
-                while True:
-                    for test in shuffled(tests):
-                        is_exited = ask_check_update(test)
-                        if is_exited: return (statistics, mistakes)
             case TestLength.OnceEverySymbol:
-                for test in shuffled(tests):
+                for test in generate_tests_once(test_type):
                     is_exited = ask_check_update(test)
-                    if is_exited: return (statistics, mistakes)
+                    if is_exited: break
             case TestLength.CertainAmount:
                 assert(hasattr(test_len, "n"))
-                tests_shuffle: list[Test] = []
-                for _ in range(test_len.n):
-                    if len(tests_shuffle) == 0:
-                        tests_shuffle = shuffled(tests)
-                    test = tests_shuffle.pop()
+                for test in generate_tests_certain_amount(test_type, test_len.n):
                     is_exited = ask_check_update(test)
-                    if is_exited: return (statistics, mistakes)
+                    if is_exited: break
+            case TestLength.Endless:
+                for test in generate_tests_endless(test_type):
+                    is_exited = ask_check_update(test)
+                    if is_exited: break
             case _:
                 unreachable()
     except KeyboardInterrupt:
         print(Constants.EXITING)
     return (statistics, mistakes)
+
+
+def exit(additional_message: None | str = None):
+    if additional_message is not None:
+        print(additional_message)
+    print(Constants.EXITING)
+    sys_exit(0)
 
 
 def ask_test_type() -> TestType:
@@ -100,23 +102,33 @@ def ask_test_type() -> TestType:
         print(f"{i+1}) {test_type.value}")
     try:
         chosen_option: int = int(input(f"Choose test type (1-{len(TestType)}): ")) - 1
+    except ValueError:
+        exit("Not a number")
     except KeyboardInterrupt:
-        print(Constants.EXITING)
-        sys_exit(0)
+        exit()
+    if chosen_option not in range(len(TestType)): exit("Number not in range.")
     test_type = TestType.get_by_index(chosen_option)
     return test_type
 
 
-def ask_test_len() -> TestLength:
+def ask_test_len(test_type: TestType) -> TestLength:
     print("Available test lenghts:")
-    for (i, test_type) in enumerate(TestLength):
-        print(f"{i+1}) {test_type.value}")
+
+    test_lens: list[TestLength] = list(TestLength)
+    if test_type == TestType.KanaRandomWords:
+        test_lens.remove(TestLength.OnceEverySymbol)
+
+    for (i, test_len) in enumerate(test_lens):
+        print(f"{i+1}) {test_len.value}")
+
     try:
-        chosen_option: int = int(input(f"Choose test lenght (1-{len(TestLength)}): ")) - 1
+        chosen_option: int = int(input(f"Choose test lenght (1-{len(test_lens)}): ")) - 1
+    except ValueError:
+        exit("Not a number")
     except KeyboardInterrupt:
-        print(Constants.EXITING)
-        sys_exit(0)
-    test_len = TestLength.get_by_index(chosen_option)
+        exit()
+    if chosen_option not in range(len(test_lens)): exit("Number not in range.")
+    test_len = test_lens[chosen_option]
     if test_len == TestLength.CertainAmount:
         test_len.n = int(input("How many times? "))
     return test_len
@@ -153,10 +165,9 @@ def main() -> None:
 
     test_type = ask_test_type()
     print()
-    test_len = ask_test_len()
+    test_len = ask_test_len(test_type)
 
-    tests = generate_tests(test_type)
-    statistics, mistakes = run_test(tests, test_len)
+    statistics, mistakes = run_test(test_type, test_len)
 
     print()
     try:

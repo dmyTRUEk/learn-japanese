@@ -2,9 +2,9 @@
 Kana (Hiragana + Katakana)
 """
 
-from japanese_symbols_classes import JapaneseLetter
+from kana_class import JapaneseLetter
 
-LETTERS: list[JapaneseLetter] = [
+JAPANESE_LETTERS: list[JapaneseLetter] = [
     JapaneseLetter("a", "あ", "ア"),
     JapaneseLetter("i", "い", "イ"),
     JapaneseLetter("u", "う", "ウ"),
