@@ -100,7 +100,10 @@ def gen_test_kanji_translate(japanese_word: None | JapaneseWord = None) -> Test:
 def gen_test_kanji_spell(japanese_word: None | JapaneseWord = None) -> Test:
     if japanese_word is None:
         assert(len(JAPANESE_WORDS) > 0)
-        japanese_word = random_choice(JAPANESE_WORDS)
+        while True:
+            japanese_word = random_choice(JAPANESE_WORDS)
+            if japanese_word.latin_spelling != None:
+                break
     return Test(
         Constants.SPELL_TO_FMT,
         japanese_word.symbol,
