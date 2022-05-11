@@ -4,6 +4,8 @@ Kanji and Words
 
 from kanji_class import JapaneseWord
 
+
+
 JAPANESE_WORDS: list[JapaneseWord] = [
     JapaneseWord("一", ["1", "one"], ls="ichi"),
     JapaneseWord("二", ["2", "two"], ls="ni"),
