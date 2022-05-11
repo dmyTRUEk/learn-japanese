@@ -4,6 +4,7 @@ Learn Japanese program by dmyTRUEk
 
 
 ## Todo:
+- fix: for `random_gauss` use round
 - check if generate by gauss really generates as i want
 - rewrite all using pipes
 - print description
