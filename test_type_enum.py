@@ -4,6 +4,8 @@ Test Type enum
 
 from enum import Enum
 
+
+
 class TestType(Enum):
     Hiragana = "Hiragana"
     Katakana = "Katakana"

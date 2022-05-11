@@ -11,10 +11,11 @@ from colorama import Style
 from colorama import Fore as fg
 #from colorama import Back as bg
 
-from extensions import unreachable, avg, trim_by_first_line
-from test_class import Test, generate_tests_certain_amount, generate_tests_endless, generate_tests_once
+from extensions_python import unreachable, avg, trim_by_first_line
+from test_class import Test
 from test_length_enum import TestLength
 from test_type_enum import TestType
+from tests_generation import generate_tests_certain_amount, generate_tests_endless, generate_tests_once
 
 
 

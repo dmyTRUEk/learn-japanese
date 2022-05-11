@@ -2,7 +2,7 @@
 Kanji or Word symbols class
 """
 
-from extensions import find_all
+from extensions_python import find_all
 from kana import JAPANESE_LETTERS
 
 
