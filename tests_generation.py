@@ -7,7 +7,7 @@ from time import time as current_time
 from typing import Iterator
 
 from pipe import map
-from extensions_pipe import abs_, max_, to_int
+from extensions_pipe import abs_, max_, to_int_round
 
 from extensions_python import join_str, unreachable
 from kana import JAPANESE_LETTERS
@@ -109,7 +109,7 @@ def gen_test_kanji_spell(japanese_word: None | JapaneseWord = None) -> Test:
     )
 
 def random_difficulty_by_gauss(difficulty: float) -> int:
-    return random_gauss(difficulty, difficulty/2) | abs_ | to_int | max_(1)
+    return random_gauss(difficulty, difficulty/2) | abs_ | to_int_round | max_(1)
 
 def gen_test_hiragana_random_word(difficulty: float) -> Test:
     assert(len(JAPANESE_LETTERS) > 0)

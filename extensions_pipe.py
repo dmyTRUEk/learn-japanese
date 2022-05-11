@@ -16,3 +16,5 @@ to_int = to_type(int)
 to_float = to_type(float)
 #to_int = Pipe(lambda x: int(x))
 
+to_int_round = Pipe(lambda x: round(x))
+
