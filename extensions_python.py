@@ -85,3 +85,15 @@ def enhance_enum(cls):
     setattr(cls, "get_by_index", get_by_index)
     return cls
 
+
+
+def japanese_uppercase(string: str):
+    res = ""
+    for ch in string:
+        match ch:
+            case 'ょ':
+                res += 'よ'
+            case _:
+                res += ch
+    return res
+
