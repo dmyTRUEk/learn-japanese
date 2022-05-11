@@ -68,6 +68,7 @@ def generate_tests_endless(test_type: TestType) -> Iterator[Test]:
 
 def gen_test_hiragana(japanese_letter: None | JapaneseLetter = None) -> Test:
     if japanese_letter is None:
+        assert(len(JAPANESE_LETTERS) > 0)
         japanese_letter = random_choice(JAPANESE_LETTERS)
     return Test(
         Constants.SPELL_TO_FMT,
@@ -77,6 +78,7 @@ def gen_test_hiragana(japanese_letter: None | JapaneseLetter = None) -> Test:
 
 def gen_test_katakana(japanese_letter: None | JapaneseLetter = None) -> Test:
     if japanese_letter is None:
+        assert(len(JAPANESE_LETTERS) > 0)
         japanese_letter = random_choice(JAPANESE_LETTERS)
     return Test(
         Constants.SPELL_TO_FMT,
@@ -86,6 +88,7 @@ def gen_test_katakana(japanese_letter: None | JapaneseLetter = None) -> Test:
 
 def gen_test_kanji_translate(japanese_word: None | JapaneseWord = None) -> Test:
     if japanese_word is None:
+        assert(len(JAPANESE_WORDS) > 0)
         japanese_word = random_choice(JAPANESE_WORDS)
     return Test(
         Constants.TRANSLATE_TO_FMT,
@@ -96,6 +99,7 @@ def gen_test_kanji_translate(japanese_word: None | JapaneseWord = None) -> Test:
 
 def gen_test_kanji_spell(japanese_word: None | JapaneseWord = None) -> Test:
     if japanese_word is None:
+        assert(len(JAPANESE_WORDS) > 0)
         japanese_word = random_choice(JAPANESE_WORDS)
     return Test(
         Constants.SPELL_TO_FMT,
@@ -108,9 +112,8 @@ def random_difficulty_by_gauss(difficulty: float) -> int:
     return random_gauss(difficulty, difficulty/2) | abs_ | to_int | max_(1)
 
 def gen_test_hiragana_random_word(difficulty: float) -> Test:
-    # TODO: extract this gauss to function
+    assert(len(JAPANESE_LETTERS) > 0)
     n: int = random_difficulty_by_gauss(difficulty)
-    # TODO: if n <= 0 => n=1
     letters: list[JapaneseLetter] = [random_choice(JAPANESE_LETTERS) for _ in range(n)]
     return Test(
         Constants.SPELL_TO_FMT,
@@ -119,6 +122,7 @@ def gen_test_hiragana_random_word(difficulty: float) -> Test:
     )
 
 def gen_test_katakana_random_word(difficulty: float) -> Test:
+    assert(len(JAPANESE_LETTERS) > 0)
     n: int = random_difficulty_by_gauss(difficulty)
     letters: list[JapaneseLetter] = [random_choice(JAPANESE_LETTERS) for _ in range(n)]
     return Test(
