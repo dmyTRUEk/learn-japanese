@@ -2,7 +2,7 @@
 Learn Japanese program by dmyTRUEk
 """
 
-__version__ = "0.3.3"
+__version__ = "0.4.0"
 
 from copy import deepcopy
 from sys import exit as sys_exit
@@ -12,7 +12,9 @@ from colorama import Fore as fg
 #from colorama import Back as bg
 
 from extensions import unreachable, avg, trim_by_first_line
-from tests import Test, TestLength, TestType, generate_tests_certain_amount, generate_tests_endless, generate_tests_once
+from test_class import Test, generate_tests_certain_amount, generate_tests_endless, generate_tests_once
+from test_length_enum import TestLength
+from test_type_enum import TestType
 
 
 
@@ -98,16 +100,29 @@ def exit(additional_message: None | str = None):
 
 def ask_test_type() -> TestType:
     print("Available test types:")
+
     for (i, test_type) in enumerate(TestType):
         print(f"{i+1}) {test_type.value}")
+
     try:
         chosen_option: int = int(input(f"Choose test type (1-{len(TestType)}): ")) - 1
     except ValueError:
-        exit("Not a number")
+        exit("Not an integer number")
     except KeyboardInterrupt:
         exit()
     if chosen_option not in range(len(TestType)): exit("Number not in range.")
-    test_type = TestType.get_by_index(chosen_option)
+
+    test_type = list(TestType)[chosen_option]
+
+    if test_type == TestType.KanaRandomWords:
+        try:
+            difficulty: int = int(input("Choose difficulty (average word len): "))
+        except ValueError:
+            exit("Not a floating point number")
+        except KeyboardInterrupt:
+            exit()
+        test_type.difficulty = difficulty
+
     return test_type
 
 
@@ -128,6 +143,7 @@ def ask_test_len(test_type: TestType) -> TestLength:
     except KeyboardInterrupt:
         exit()
     if chosen_option not in range(len(test_lens)): exit("Number not in range.")
+
     test_len = test_lens[chosen_option]
     if test_len == TestLength.CertainAmount:
         test_len.n = int(input("How many times? "))

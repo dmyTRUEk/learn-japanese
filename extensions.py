@@ -40,6 +40,9 @@ def avg(l: list) -> float | None:
 def join_lines(lines: Iterable[str]) -> str:
     return '\n'.join(lines)
 
+def join_str(parts: Iterable[str]) -> str:
+    return "".join(parts)
+
 
 def count_start(string: str, character: char=' ') -> int:
     for (i, c) in enumerate(string):
@@ -70,4 +73,15 @@ def find_first(iterable: Iterable[T], f: Callable[[T], bool]) -> None | T:
 def find_all(iterable: Iterable[T], f: Callable[[T], bool]) -> None | list[T]:
     res: list[T] = [el for el in iterable if (f(el) == True)]
     return res if res else None
+
+
+
+def enhance_enum(cls):
+    assert(cls is not None)
+    def get_by_index(index: int):
+        assert(isinstance(index, int))
+        assert(0 <= index < len(cls))
+        return list(cls)[index]
+    setattr(cls, "get_by_index", get_by_index)
+    return cls
 
