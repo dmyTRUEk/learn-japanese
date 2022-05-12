@@ -48,6 +48,9 @@ def join_lines(lines: Iterable[str]) -> str:
 def join_str(parts: Iterable[str]) -> str:
     return "".join(parts)
 
+def join_elements(elements: Iterable[str]) -> str:
+    return ", ".join(elements)
+
 
 def count_start(string: str, character: char=' ') -> int:
     for (i, c) in enumerate(string):
