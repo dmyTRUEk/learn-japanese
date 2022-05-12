@@ -22,6 +22,11 @@ def unreachable():
 def todo():
     raise NotImplementedError()
 
+def assert_(b: bool, msg: str):
+    assert(isinstance(b, bool))
+    if b == False:
+        raise AssertionError(msg)
+
 
 
 def shuffled(l: list) -> list:
