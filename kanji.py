@@ -38,6 +38,29 @@ JAPANESE_WORDS: list[JapaneseWord] = [
     JapaneseWord("でした", ["was", "were"]),
     JapaneseWord("たんじょび", "birthday"),
 
+    JapaneseWord("今日", "today", ks="きょう"),
+    JapaneseWord("明日", "tomorrow", ks="あした"),
+    JapaneseWord("昨日", "yesterday", ks="きのう"),
+
+    JapaneseWord("日", "sunday", ks="にちようび"),
+    JapaneseWord("月", "monday", ks="げつようび"),
+    JapaneseWord("火", "tuesday", ks="かようび"),
+    JapaneseWord("水", "wednesday", ks="すいようび"),
+    JapaneseWord("木", "thursday", ks="もくようび"),
+    JapaneseWord("金", "friday", ks="きんようび"),
+    JapaneseWord("土", "sunday", ks="どようび"),
+
+    JapaneseWord("日", "day", ks="ひ"),
+    JapaneseWord("曜", "day of the week", ks="よ"),
+
+    JapaneseWord("おはよございます。", "good morning"),
+    JapaneseWord("こんにちは。", ["good day", "good afternoon"]),
+    JapaneseWord("こんばんは。", "good evening"),
+
+    JapaneseWord("名", "name", ks="なまえ"),
+    JapaneseWord("お名は？", ["what is your name?", "what's your name?", "whats your name?"]),
+    JapaneseWord("はじめまして。", "nice to meet you"),
+
     #JapaneseWord("", "", ks=""),
 ]
 
