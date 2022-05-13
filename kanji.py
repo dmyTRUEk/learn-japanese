@@ -23,8 +23,8 @@ JAPANESE_WORDS: list[JapaneseWord] = [
 
     JapaneseWord("私", "i", ks="わたし"),
     JapaneseWord("人", ["human", "person", "people"], ks="ひと"),
-    JapaneseWord("女", ["woman", "female"], ks="おんな"),
-    JapaneseWord("男", ["man", "male"], ks="おとこ"),
+    JapaneseWord("女", ["woman", "female", "women"], ks="おんな"),
+    JapaneseWord("男", ["man", "male", "men"], ks="おとこ"),
     JapaneseWord("光", ["light", "shine"], ks="ひかり"),
 
     JapaneseWord("あなた", "you"),
