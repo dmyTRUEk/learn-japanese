@@ -4,11 +4,12 @@ Kanji or Word symbols class
 
 from pipe import all, map
 
-from extensions_python import find_all, japanese_uppercase, unreachable
+from extensions_python import beautiful_repr, find_all, japanese_uppercase, unreachable
 from kana import JAPANESE_LETTERS
 
 
 
+@beautiful_repr
 class JapaneseWord:
     symbol: str
     translation: str | list[str] # to english

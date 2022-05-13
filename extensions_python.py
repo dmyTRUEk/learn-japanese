@@ -115,3 +115,12 @@ def japanese_uppercase(string: str):
                 res += ch
     return res
 
+def beautiful_repr(cls):
+    assert(cls is not None)
+    def __repr__(self):
+        return f"{type(self).__name__}" + "(" + join_elements([
+            a + "=" + str_or_list_to_str(self.__getattribute__(a)) for a in self.__dict__
+        ]) + ")"
+    setattr(cls, "__repr__", __repr__)
+    return cls
+

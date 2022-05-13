@@ -2,10 +2,11 @@
 Test class
 """
 
-from extensions_python import unreachable
+from extensions_python import beautiful_repr, unreachable
 
 
 
+@beautiful_repr
 class Test:
     _message_to_fmt: str
     _question: str
@@ -42,32 +43,6 @@ class Test:
             hash(self._question) +
             hash("".join(self.answer)) +
             hash(self.description)
-        )
-
-    def __repr__(self) -> str:
-        return (
-            "Test(" +
-            f"_message_to_fmt='{self._message_to_fmt}'" + ", " +
-            f"_question='{self._question}'" + ", " +
-            (
-                "answer=" +
-                ("'" if isinstance(self.answer, str) else "") +
-                str(self.answer) +
-                ("'" if isinstance(self.answer, str) else "")
-            ) + ", " +
-            (
-                "description=" +
-                ("'" if isinstance(self.description, str) else "") +
-                str(self.description) +
-                ("'" if isinstance(self.description, str) else "")
-            ) + ", " +
-            (
-                "user_answer=" +
-                ("'" if isinstance(self.user_answer, str) else "") +
-                str(self.user_answer) +
-                ("'" if isinstance(self.user_answer, str) else "")
-            ) +
-            ")"
         )
 
     def get_message(self) -> str:
