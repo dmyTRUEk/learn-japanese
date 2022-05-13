@@ -23,6 +23,7 @@ class Constants:
     SPELL_TO_FMT: str = "Spell {}"
     TRANSLATE_TO_FMT: str = "Translate {}"
     TIME_LIMIT: float = 0.1 # in seconds
+    DIFFICULTY_DEFAULT = 3
 
 
 
@@ -166,6 +167,8 @@ def generate_test(test_type: TestType) -> Test:
             return random_choice([
                 gen_test_hiragana(),
                 gen_test_katakana(),
+                gen_test_hiragana_random_word(Constants.DIFFICULTY_DEFAULT),
+                gen_test_katakana_random_word(Constants.DIFFICULTY_DEFAULT),
                 gen_test_kanji_translate(),
                 gen_test_kanji_spell(),
             ])
