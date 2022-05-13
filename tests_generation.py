@@ -92,7 +92,7 @@ def gen_test_kanji_translate(japanese_word: None | JapaneseWord = None) -> Test:
         japanese_word = random_choice(JAPANESE_WORDS)
     return Test(
         Constants.TRANSLATE_TO_FMT,
-        japanese_word.symbol,
+        japanese_word.word,
         japanese_word.translation,
         desc=japanese_word.description,
     )
@@ -106,7 +106,7 @@ def gen_test_kanji_spell(japanese_word: None | JapaneseWord = None) -> Test:
                 break
     return Test(
         Constants.SPELL_TO_FMT,
-        japanese_word.symbol,
+        japanese_word.word,
         japanese_word.latin_spelling,
         desc=japanese_word.description,
     )

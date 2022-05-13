@@ -41,3 +41,6 @@ JAPANESE_WORDS: list[JapaneseWord] = [
     #JapaneseWord("", "", ks=""),
 ]
 
+for japanese_word in JAPANESE_WORDS:
+    japanese_word.init_spelling()
+

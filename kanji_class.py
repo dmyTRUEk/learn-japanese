@@ -2,61 +2,69 @@
 Kanji or Word symbols class
 """
 
-from pipe import all, map
-
-from extensions_python import beautiful_repr, find_all, japanese_uppercase, unreachable
-from kana import JAPANESE_LETTERS
+from extensions_python import assert_, beautiful_repr, unreachable
+from extensions_pipe import flatten
+from extensions_for_japanese import is_translitable, translit_to_latin
 
 
 
 @beautiful_repr
 class JapaneseWord:
-    symbol: str
+    word: str
     translation: str | list[str] # to english
+    description: None | str = None
     latin_spelling: str | list[str]
     kana_spelling: None | str | list[str] = None
-    description: None | str = None
 
     def __init__(
             self,
-            symbol: str,
+            word: str,
             translation_to_english: str | list[str],
             /, *,
             ls: None | str | list[str] = None, # latin spelling
             ks: None | str | list[str] = None, # kana spelling
             desc: None | str = None,
             ):
-        self.symbol = symbol
+        self.word = word
         self.translation = translation_to_english
+        if ks is not None:
+            self.kana_spelling = ks
+        else:
+            self._ls = ls
+            self._ks = ks
+        self.description = desc
 
-        if ((symbol:=japanese_uppercase(symbol)) | all(lambda ch:
-                (ch in JAPANESE_LETTERS | map(lambda l: l.hiragana)) or
-                (ch in JAPANESE_LETTERS | map(lambda l: l.katakana))
-                )):
-            ks = symbol
+    def init_spelling(self):
+        if self.kana_spelling is not None:
+            match self.kana_spelling:
+                case str(ks):
+                    self.latin_spelling = translit_to_latin(ks)
+                case list(kss):
+                    self.latin_spelling = [translit_to_latin(ks) for ks in kss] | flatten
+            return
+
+        ls = self._ls
+        ks = self._ks
+        del self._ls
+        del self._ks
+
+        if is_translitable(self.word):
+            ks = self.word
+        else:
+            raise Exception("word is NOT translitable")
 
         self.kana_spelling = ks
 
         if (ks is not None) and (ls is None):
-            def kana_to_latin(kana_spelling: str) -> str:
-                latin_spelling = ""
-                for letter in kana_spelling:
-                    lss = find_all(JAPANESE_LETTERS, lambda l: letter in [l.hiragana, l.katakana])
-                    assert(lss is not None)
-                    assert(len(lss) == 1)
-                    lss = lss[0]
-                    latin_spelling += lss.latin_spelling
-                return latin_spelling
-
             match ks:
                 case str(ks):
-                    ls = kana_to_latin(ks)
+                    ls = translit_to_latin(ks)
                 case list(kss):
-                    ls = [kana_to_latin(ks) for ks in kss]
+                    ls = [translit_to_latin(ks) for ks in kss]
                 case _:
                     unreachable()
 
+        assert_(ls is not None, "No spelling provided and can't figure it out automatically.")
         assert(ls is not None)
         self.latin_spelling = ls
-        self.description = desc
 
