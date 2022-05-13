@@ -29,15 +29,16 @@ def is_kana(string: str) -> bool:
 
 def is_translitable(string: str) -> bool:
     for symbol in string:
-        if symbol in JAPANESE_PUNCTUATION_TO_ENG:
-            continue
-        elif find_all(kanji.JAPANESE_WORDS, lambda jw: symbol == jw.word) is not None:
-            continue
-        elif (found:=find_all(JAPANESE_LETTERS, lambda l: symbol in [l.hiragana, l.katakana])) is not None:
-            assert(len(found) == 1)
-            continue
-        else:
+        is_punctuation: bool = symbol in JAPANESE_PUNCTUATION_TO_ENG
+        is_japanese_word: bool = find_all(kanji.JAPANESE_WORDS, lambda jw: symbol == jw.word) is not None
+        found_letters = find_all(JAPANESE_LETTERS, lambda l: symbol in [l.hiragana, l.katakana])
+        is_japanese_letter: bool = found_letters is not None
+        if is_japanese_letter:
+            assert(len(found_letters) == 1)
+
+        if not (is_punctuation or is_japanese_word or is_japanese_letter):
             return False
+
     return True
 
 
