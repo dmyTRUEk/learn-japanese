@@ -170,6 +170,7 @@ def print_mistakes(mistakes: list[Test]):
         print(f"{i+1}. {test.get_message()}")
         print("   Correct answer: " + colorize(str(test.answer), fg=fg.GREEN))
         print("   Your    answer: " + colorize(test.user_answer, fg=fg.RED))
+        print()
 
 
 def main() -> None:
