@@ -89,6 +89,10 @@ JAPANESE_LETTERS: list[JapaneseLetter] = [
     JapaneseLetter("yu", "ゆ", "ユ"),
     JapaneseLetter("yo", "よ", "ヨ"),
 
+    JapaneseLetter("ya", "ゃ", "ャ"),
+    JapaneseLetter("yu", "ゅ", "ュ"),
+    JapaneseLetter("yo", "ょ", "ョ"),
+
     #TODO?: wi -> ヰ,   we -> ヱ
     JapaneseLetter("wa", "わ", "ワ"),
     JapaneseLetter("O", "を", "ヲ"),
