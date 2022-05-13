@@ -70,6 +70,16 @@ def trim_by_first_line(string: str) -> str:
     return map_by_line(lambda line: line[first_line_shift:], string)
 
 
+def str_or_list_to_str(string: str | list[str]) -> str:
+    # abc -> 'abc'
+    # ['a', 'b'] -> ['a', 'b']
+    return (
+        ("'" if isinstance(string, str) else "") +
+        str(string) +
+        ("'" if isinstance(string, str) else "")
+    )
+
+
 
 def find_first(iterable: Iterable[T], f: Callable[[T], bool]) -> None | T:
     for el in iterable:
