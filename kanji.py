@@ -48,10 +48,10 @@ JAPANESE_WORDS: list[JapaneseWord] = [
     JapaneseWord("水", "wednesday", ks="すいようび"),
     JapaneseWord("木", "thursday", ks="もくようび"),
     JapaneseWord("金", "friday", ks="きんようび"),
-    JapaneseWord("土", "sunday", ks="どようび"),
+    JapaneseWord("土", "saturday", ks="どようび"),
 
     JapaneseWord("日", "day", ks="ひ"),
-    JapaneseWord("曜", "day of the week", ks="よ"),
+    JapaneseWord("曜", ["day of the week", "day of week"], ks="よ"),
 
     JapaneseWord("おはよございます。", "good morning"),
     JapaneseWord("こんにちは。", ["good day", "good afternoon"]),
