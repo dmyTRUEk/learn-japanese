@@ -5,7 +5,6 @@ Learn Japanese program by dmyTRUEk
 
 ## Todo:
 - impl smarter `kana_to_latin`, so that `riyu` -> `ryu`, `*ha` -> `*wa`, etc
-- refactor `str_or_list_to_str` -> `custom_repr` or smt like that
 - what checking answer, dont count for trailing dot (`.`)
 - dont wait for enter if ctrl+c
 - print description

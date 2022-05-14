@@ -70,20 +70,22 @@ def trim_by_first_line(string: str) -> str:
     return map_by_line(lambda line: line[first_line_shift:], string)
 
 
-def str_or_list_to_str(string: str | list[str]) -> str:
+def to_str(smt: str | list[str]) -> str:
     # abc -> 'abc'
     # ['a', 'b'] -> ['a', 'b']
-    return (
-        ("'" if isinstance(string, str) else "") +
-        str(string) +
-        ("'" if isinstance(string, str) else "")
-    )
+    match smt:
+        case str(s):
+            return "'" + s + "'"
+        case list(l):
+            return str(l)
+        case _:
+            unreachable()
 
 
 
 def find_first(iterable: Iterable[T], f: Callable[[T], bool]) -> None | T:
     for el in iterable:
-        if f(el) is True: # or maybe use `==`?
+        if f(el) is True: # or `==`?
             return el
     else:
         return None
@@ -96,6 +98,7 @@ def find_all(iterable: Iterable[T], f: Callable[[T], bool]) -> None | list[T]:
 
 def enhance_enum(cls):
     assert(cls is not None)
+    #TODO: assert: is Enum
     def get_by_index(index: int):
         assert(isinstance(index, int))
         assert(0 <= index < len(cls))
@@ -103,11 +106,12 @@ def enhance_enum(cls):
     setattr(cls, "get_by_index", get_by_index)
     return cls
 
+
 def beautiful_repr(cls):
     assert(cls is not None)
     def __repr__(self):
         return f"{type(self).__name__}" + "(" + join_elements([
-            a + "=" + str_or_list_to_str(self.__getattribute__(a)) for a in self.__dict__
+            a + "=" + to_str(self.__getattribute__(a)) for a in self.__dict__
         ]) + ")"
     setattr(cls, "__repr__", __repr__)
     return cls
