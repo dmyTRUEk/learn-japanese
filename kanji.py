@@ -61,6 +61,33 @@ JAPANESE_WORDS: list[JapaneseWord] = [
     JapaneseWord("お名は？", ["what is your name?", "what's your name?", "whats your name?"]),
     JapaneseWord("はじめまして。", "nice to meet you"),
 
+    JapaneseWord("幸せ", ["happy", "happiness"], ks="しあわせ"),
+    JapaneseWord("涙", ["tears", "tear"], ks="なみだ"),
+
+    JapaneseWord("太陽", "sun", ks="たいよ"),
+    JapaneseWord("雲", "cloud", ks="くも"),
+    JapaneseWord("雨", "rain", ks="あめ"),
+    JapaneseWord("雷", "thunder", ks="かみなり"),
+    JapaneseWord("霧", "fog", ks="きり"),
+
+    JapaneseWord("救い", ["rescue", "salvation"], ks="すくい"),
+    JapaneseWord("憎む", "hate", ks="にくむ"),
+    JapaneseWord("夜明け", "dawn", ks="よあけ", desc="aka morning"),
+
+    JapaneseWord("駆け引き", "tactics", ks="かけひき"),
+    JapaneseWord("森", ["forest", "woods"], ks="もり"),
+    JapaneseWord("狂気", ["madness", "insanity"], ks="きょうき"),
+    JapaneseWord("やがて", "eventually"),
+    JapaneseWord("襲う", "attack", ks="おそう"), # check "o" or "O" in ks
+    JapaneseWord("スマホ", "smartphone"),
+    JapaneseWord("月", "moon", ks="つき"),
+    JapaneseWord("朝", "morning", ks="あさ"),
+    JapaneseWord("朝ご飯", "breakfast", ks="あさごはん"),
+    JapaneseWord("朝霧", "morning fog"), # asagiri
+
+    JapaneseWord("犠牲", ["victim", "sacrifice"], ks="ぎせい"),
+    JapaneseWord("会話", "conversation", ks="かいわ"),
+
     #JapaneseWord("", "", ks=""),
 ]
 
