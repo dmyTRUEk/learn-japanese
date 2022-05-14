@@ -2,9 +2,10 @@
 Kanji or Word symbols class
 """
 
-from extensions_python import assert_, beautiful_repr, unreachable
+from pipe import all
+from extensions_python import assert_, beautiful_repr, is_latin, unreachable
 from extensions_pipe import flatten
-from extensions_for_japanese import is_translitable, translit_to_latin
+from extensions_for_japanese import is_kana, is_translitable_to_kana, translit_to_kana, translit_to_latin
 
 
 
@@ -28,6 +29,7 @@ class JapaneseWord:
         self.word = word
         self.translation = translation_to_english
         if ks is not None:
+            assert(is_kana(ks))
             self.kana_spelling = ks
         else:
             self._ls = ls
@@ -48,10 +50,11 @@ class JapaneseWord:
         del self._ls
         del self._ks
 
-        if is_translitable(self.word):
-            ks = self.word
+        if is_translitable_to_kana(self.word):
+            ks = translit_to_kana(self.word)
         else:
-            raise Exception("word is NOT translitable")
+            # raise Exception("word is NOT translitable")
+            pass
 
         self.kana_spelling = ks
 
@@ -60,11 +63,17 @@ class JapaneseWord:
                 case str(ks):
                     ls = translit_to_latin(ks)
                 case list(kss):
-                    ls = [translit_to_latin(ks) for ks in kss]
+                    ls = [translit_to_latin(ks) for ks in kss] | flatten
                 case _:
                     unreachable()
 
         assert_(ls is not None, "No spelling provided and can't figure it out automatically.")
         assert(ls is not None)
         self.latin_spelling = ls
+
+        assert(
+            (self.kana_spelling is None) or
+            (self.kana_spelling | all(lambda symbol: is_kana(symbol)))
+        )
+        assert(self.latin_spelling | all(lambda symbol: is_latin(symbol)))
 

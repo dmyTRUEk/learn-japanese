@@ -2,6 +2,8 @@
 Some functions, that missing in Python
 """
 
+from pipe import all
+
 from typing import Callable, Iterable, TypeAlias, TypeVar
 from random import shuffle
 
@@ -78,6 +80,8 @@ def to_str(smt: str | list[str]) -> str:
             return "'" + s + "'"
         case list(l):
             return str(l)
+        case None:
+            return str(None)
         case _:
             unreachable()
 
@@ -115,4 +119,19 @@ def beautiful_repr(cls):
         ]) + ")"
     setattr(cls, "__repr__", __repr__)
     return cls
+
+
+def is_latin(string: str | list[str]) -> bool:
+    LATIN_LATTERS: str = "abcdefghijklmnopqrstuvwxyz"
+    LATIN_PUNCTUATION: list[str] = [",", ".", "!", "?"]
+    match string:
+        case str(s):
+            return (s | all(lambda ch:
+                (ch in LATIN_LATTERS) or
+                (ch in LATIN_PUNCTUATION)
+            ))
+        case list(l):
+            return l | all(lambda s: is_latin(s))
+        case _:
+            unreachable()
 

@@ -19,18 +19,24 @@ JAPANESE_PUNCTUATION_TO_ENG: dict[char, char] = {
 }
 
 
-def is_kana(string: str) -> bool:
-    return (string | all(lambda ch:
-        (ch in JAPANESE_LETTERS | map(lambda l: l.hiragana)) or
-        (ch in JAPANESE_LETTERS | map(lambda l: l.katakana)) or
-        (ch in JAPANESE_PUNCTUATION_TO_ENG)
-    ))
+def is_kana(string: str | list[str]) -> bool:
+    match string:
+        case str(s):
+            return (s | all(lambda ch:
+                (ch in JAPANESE_LETTERS | map(lambda l: l.hiragana)) or
+                (ch in JAPANESE_LETTERS | map(lambda l: l.katakana)) or
+                (ch in JAPANESE_PUNCTUATION_TO_ENG)
+            ))
+        case list(l):
+            return l | all(lambda s: is_kana(s))
+        case _:
+            unreachable()
 
 
-def is_translitable(string: str) -> bool:
+def is_translitable_to_kana(string: str) -> bool:
     for symbol in string:
         is_punctuation: bool = symbol in JAPANESE_PUNCTUATION_TO_ENG
-        is_japanese_word: bool = find_all(kanji.JAPANESE_WORDS, lambda jw: symbol == jw.word) is not None
+        is_japanese_word: bool = find_all(kanji.JAPANESE_WORDS, lambda jw: symbol == jw.word and jw.kana_spelling is not None) is not None
         found_letters = find_all(JAPANESE_LETTERS, lambda l: symbol in [l.hiragana, l.katakana])
         is_japanese_letter: bool = found_letters is not None
         if is_japanese_letter:

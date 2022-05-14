@@ -7,15 +7,15 @@ __version__ = "0.5.3"
 from copy import deepcopy
 from sys import exit as sys_exit
 
-from colorama import Style
-from colorama import Fore as fg
-#from colorama import Back as bg
+from extensions_colorama import colorize, GREEN, RED
 
 from extensions_python import unreachable, avg, trim_by_first_line
 from test_class import Test
 from test_length_enum import TestLength
 from test_type_enum import TestType
 from tests_generation import generate_tests_certain_amount, generate_tests_endless, generate_tests_once
+
+# from kanji import JAPANESE_WORDS
 
 
 
@@ -27,16 +27,6 @@ class Constants:
     WRONG_TO_FMT : str = "WRONG! Correct answer: {}"
 
 
-
-def colorize(s: str, /, *, fg=None, bg=None) -> str:
-    is_fg: bool = fg is not None
-    is_bg: bool = bg is not None
-    return (
-        (fg if is_fg else "") +
-        (bg if is_bg else "") +
-        s +
-        (Style.RESET_ALL if (is_fg or is_bg) else "")
-    )
 
 
 def run_test(test_type: TestType, test_len: TestLength) -> tuple[list[bool], list[Test]]:
@@ -58,9 +48,9 @@ def run_test(test_type: TestType, test_len: TestLength) -> tuple[list[bool], lis
         statistics.append(is_answered_correctly)
 
         if is_answered_correctly:
-            print(colorize(Constants.CORRECT, fg=fg.GREEN))
+            print(colorize(Constants.CORRECT, fg=GREEN))
         else:
-            print(colorize(Constants.WRONG_TO_FMT.format(test.answer), fg=fg.RED))
+            print(colorize(Constants.WRONG_TO_FMT.format(test.answer), fg=RED))
             mistaken_test = deepcopy(test)
             mistaken_test.user_answer = user_answer
             if mistaken_test not in mistakes:
@@ -164,12 +154,12 @@ def print_statistics(statistics: list[bool]):
 
 
 def print_mistakes(mistakes: list[Test]):
-    print(f"Total mistakes: " + colorize(str(len(mistakes)), fg=fg.RED) + ". Your mistakes:")
+    print(f"Total mistakes: " + colorize(str(len(mistakes)), fg=RED) + ". Your mistakes:")
     for (i, test) in enumerate(mistakes):
         assert(test.user_answer is not None)
         print(f"{i+1}. {test.get_message()}")
-        print("   Correct answer: " + colorize(str(test.answer), fg=fg.GREEN))
-        print("   Your    answer: " + colorize(test.user_answer, fg=fg.RED))
+        print("   Correct answer: " + colorize(str(test.answer), fg=GREEN))
+        print("   Your    answer: " + colorize(test.user_answer, fg=RED))
         print()
 
 
@@ -180,6 +170,9 @@ def main() -> None:
         To exit input `{Constants.COMMAND_STOP}` or press Ctrl+C.
     """))
     print()
+
+    # for jw in JAPANESE_WORDS:
+    #     print(jw)
 
     test_type = ask_test_type()
     print()
@@ -196,7 +189,6 @@ def main() -> None:
     if mistakes:
         print()
         print_mistakes(mistakes)
-    print()
     print_statistics(statistics)
 
     print()
