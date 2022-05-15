@@ -2,14 +2,14 @@
 Learn Japanese program by dmyTRUEk
 """
 
-__version__ = "0.5.4"
+__version__ = "0.6.0"
 
 from copy import deepcopy
 from sys import exit as sys_exit
 
 from extensions_colorama import colorize, GREEN, RED
-
-from extensions_python import unreachable, avg, trim_by_first_line
+from extensions_pipe import all_, map_, uniq_
+from extensions_python import find_first, unreachable, avg, trim_by_first_line
 from test_class import Test
 from test_length_enum import TestLength
 from test_type_enum import TestType
@@ -29,7 +29,7 @@ class Constants:
 
 
 
-def run_test(test_type: TestType, test_len: TestLength) -> tuple[list[bool], list[Test]]:
+def run_test(test_types: list[TestType], test_len: TestLength) -> tuple[list[bool], list[Test]]:
     statistics: list[bool] = []
     mistakes: list[Test] = []
 
@@ -63,16 +63,16 @@ def run_test(test_type: TestType, test_len: TestLength) -> tuple[list[bool], lis
     try:
         match test_len:
             case TestLength.OnceEverySymbol:
-                for test in generate_tests_once(test_type):
+                for test in generate_tests_once(test_types):
                     is_exited = ask_check_update(test)
                     if is_exited: break
             case TestLength.CertainAmount:
                 assert(hasattr(test_len, "n"))
-                for test in generate_tests_certain_amount(test_type, test_len.n):
+                for test in generate_tests_certain_amount(test_types, test_len.n):
                     is_exited = ask_check_update(test)
                     if is_exited: break
             case TestLength.Endless:
-                for test in generate_tests_endless(test_type):
+                for test in generate_tests_endless(test_types):
                     is_exited = ask_check_update(test)
                     if is_exited: break
             case _:
@@ -89,39 +89,49 @@ def exit(additional_message: None | str = None):
     sys_exit(0)
 
 
-def ask_test_type() -> TestType:
+def ask_test_types() -> list[TestType]:
     print("Available test types:")
 
     for (i, test_type) in enumerate(TestType):
         print(f"{i+1}) {test_type.value}")
+    print("*) All")
 
     try:
-        chosen_option: int = int(input(f"Choose test type (1-{len(TestType)}): ")) - 1
+        chosen_options_str: str = input(f"Choose test types: ")
+        if chosen_options_str == "*":
+            chosen_options: list[int] = [i+1 for i in range(len(TestType))]
+        else:
+            chosen_options: list[int] = chosen_options_str.replace(" ", "").split(",") | map_(lambda o: int(o))
     except ValueError:
-        exit("Not an integer number")
+        exit("Not an integers.")
     except KeyboardInterrupt:
         exit()
-    if chosen_option not in range(len(TestType)): exit("Number not in range.")
 
-    test_type = list(TestType)[chosen_option]
+    if not chosen_options | all_(lambda o: 1 <= o <= len(TestType)):
+        exit("Numbers not in valid range.")
 
-    if test_type == TestType.KanaRandomWords:
+    if len(chosen_options) != len(chosen_options | uniq_):
+        exit("Duplication found.")
+
+    test_types: list[TestType] = chosen_options | map_(lambda o: list(TestType)[o-1])
+
+    if (found:=find_first(test_types, lambda t: t == TestType.KanaRandomWords)) is not None:
         try:
             difficulty: int = int(input("Choose difficulty (average word len): "))
         except ValueError:
             exit("Not a floating point number")
         except KeyboardInterrupt:
             exit()
-        test_type.difficulty = difficulty
+        found.difficulty = difficulty
 
-    return test_type
+    return test_types
 
 
-def ask_test_len(test_type: TestType) -> TestLength:
+def ask_test_len(test_types: list[TestType]) -> TestLength:
     print("Available test lenghts:")
 
     test_lens: list[TestLength] = list(TestLength)
-    if test_type == TestType.KanaRandomWords:
+    if TestType.KanaRandomWords in test_types:
         test_lens.remove(TestLength.OnceEverySymbol)
 
     for (i, test_len) in enumerate(test_lens):
@@ -174,11 +184,11 @@ def main() -> None:
     # for jw in JAPANESE_WORDS:
     #     print(jw)
 
-    test_type = ask_test_type()
+    test_types: list[TestType] = ask_test_types()
     print()
-    test_len = ask_test_len(test_type)
+    test_len: TestLength = ask_test_len(test_types)
 
-    statistics, mistakes = run_test(test_type, test_len)
+    statistics, mistakes = run_test(test_types, test_len)
 
     print()
     try:
@@ -186,8 +196,8 @@ def main() -> None:
     except KeyboardInterrupt:
         pass
 
+    print()
     if mistakes:
-        print()
         print_mistakes(mistakes)
     print_statistics(statistics)
 

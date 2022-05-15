@@ -2,9 +2,8 @@
 Some functions to work with Japanese
 """
 
-from pipe import all, map
-
 from extensions_python import char, find_all, unreachable
+from extensions_pipe import all_, map_
 
 from kana import JAPANESE_LETTERS
 import kanji
@@ -22,13 +21,13 @@ JAPANESE_PUNCTUATION_TO_ENG: dict[char, char] = {
 def is_kana(string: str | list[str]) -> bool:
     match string:
         case str(s):
-            return (s | all(lambda ch:
-                (ch in JAPANESE_LETTERS | map(lambda l: l.hiragana)) or
-                (ch in JAPANESE_LETTERS | map(lambda l: l.katakana)) or
+            return (s | all_(lambda ch:
+                (ch in JAPANESE_LETTERS | map_(lambda l: l.hiragana)) or
+                (ch in JAPANESE_LETTERS | map_(lambda l: l.katakana)) or
                 (ch in JAPANESE_PUNCTUATION_TO_ENG)
             ))
         case list(l):
-            return l | all(lambda s: is_kana(s))
+            return l | all_(lambda s: is_kana(s))
         case _:
             unreachable()
 
@@ -64,7 +63,7 @@ def translit_to_kana(japanese_word: str) -> str | list[str]:
                 case str(_ks):
                     kana_spelling += _ks
                 case list(kss):
-                    kana_spelling = kss | map(lambda _ks: kana_spelling + _ks)
+                    kana_spelling = kss | map_(lambda _ks: kana_spelling + _ks)
                 case _:
                     unreachable()
         else:
@@ -91,7 +90,7 @@ def translit_to_latin(japanese_word: str) -> str | list[str]:
                 case str(_ls):
                     latin_spelling += _ls
                 case list(lss):
-                    latin_spelling = lss | map(lambda _ls: latin_spelling + _ls)
+                    latin_spelling = lss | map_(lambda _ls: latin_spelling + _ls)
                 case _:
                     unreachable()
         else:

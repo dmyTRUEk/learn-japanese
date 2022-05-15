@@ -2,8 +2,6 @@
 Some functions, that missing in Python
 """
 
-from pipe import all
-
 from typing import Callable, Iterable, TypeAlias, TypeVar
 from random import shuffle
 
@@ -12,6 +10,7 @@ from random import shuffle
 char: TypeAlias = str
 
 T = TypeVar("T")
+R = TypeVar("R")
 
 
 
@@ -42,6 +41,16 @@ def avg(l: list) -> float | None:
         return None
     else:
         return sum(l)/len(l)
+
+
+def flatten(l: list) -> list:
+    res = []
+    for el in l:
+        if type(el) == list:
+            res += flatten(el)
+        else:
+            res.append(el)
+    return res
 
 
 def join_lines(lines: Iterable[str]) -> str:
@@ -126,12 +135,14 @@ def is_latin(string: str | list[str]) -> bool:
     LATIN_PUNCTUATION: list[str] = [",", ".", "!", "?"]
     match string:
         case str(s):
-            return (s | all(lambda ch:
-                (ch in LATIN_LATTERS) or
-                (ch in LATIN_PUNCTUATION)
+            return all(map(
+                lambda ch:
+                    (ch in LATIN_LATTERS) or
+                    (ch in LATIN_PUNCTUATION),
+                s
             ))
         case list(l):
-            return l | all(lambda s: is_latin(s))
+            return all(map(lambda s: is_latin(s), l))
         case _:
             unreachable()
 

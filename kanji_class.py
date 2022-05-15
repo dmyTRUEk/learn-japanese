@@ -2,9 +2,8 @@
 Kanji or Word symbols class
 """
 
-from pipe import all
 from extensions_python import assert_, beautiful_repr, is_latin, unreachable
-from extensions_pipe import flatten
+from extensions_pipe import all_, flatten_
 from extensions_for_japanese import is_kana, is_translitable_to_kana, translit_to_kana, translit_to_latin
 
 
@@ -42,7 +41,7 @@ class JapaneseWord:
                 case str(ks):
                     self.latin_spelling = translit_to_latin(ks)
                 case list(kss):
-                    self.latin_spelling = [translit_to_latin(ks) for ks in kss] | flatten
+                    self.latin_spelling = [translit_to_latin(ks) for ks in kss] | flatten_
             return
 
         ls = self._ls
@@ -63,7 +62,7 @@ class JapaneseWord:
                 case str(ks):
                     ls = translit_to_latin(ks)
                 case list(kss):
-                    ls = [translit_to_latin(ks) for ks in kss] | flatten
+                    ls = [translit_to_latin(ks) for ks in kss] | flatten_
                 case _:
                     unreachable()
 
@@ -73,7 +72,7 @@ class JapaneseWord:
 
         assert(
             (self.kana_spelling is None) or
-            (self.kana_spelling | all(lambda symbol: is_kana(symbol)))
+            (self.kana_spelling | all_(lambda symbol: is_kana(symbol)))
         )
-        assert(self.latin_spelling | all(lambda symbol: is_latin(symbol)))
+        assert(self.latin_spelling | all_(lambda symbol: is_latin(symbol)))
 
