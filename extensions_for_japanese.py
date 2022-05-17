@@ -94,6 +94,19 @@ def translit_to_latin(japanese_word: str) -> str | list[str]:
                     unreachable()
         else:
             unreachable()
+    def simplify_iy(s: str) -> str:
+        return (s
+            .replace("iya", "ya")
+            .replace("iyu", "yu")
+            .replace("iyo", "yo")
+        )
+    match latin_spelling:
+        case str(s):
+            latin_spelling = simplify_iy(s)
+        case list(l):
+            latin_spelling = [simplify_iy(s) for s in l]
+        case _:
+            unreachable()
     return latin_spelling
 
 

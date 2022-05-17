@@ -15,9 +15,9 @@ JAPANESE_WORDS: list[JapaneseWord] = [
     JapaneseWord("六", ["6", "six"], ks="ろく"),
     JapaneseWord("七", ["7", "seven"], ks=["しち", "なな"]),
     JapaneseWord("八", ["8", "eight"], ks="はち"),
-    JapaneseWord("九", ["9", "nine"], ls=["ku", "kyu"]),
-    JapaneseWord("十", ["10", "ten"], ls="jyu"),
-    JapaneseWord("百", ["100", "hundred"], ls="hyaku"),
+    JapaneseWord("九", ["9", "nine"], ks=["く", "きゅ"]),
+    JapaneseWord("十", ["10", "ten"], ks="じゅ"),
+    JapaneseWord("百", ["100", "hundred"], ks="ひゃく"),
     JapaneseWord("千", ["1000", "thousand", "1_000"], ks="せん"),
     JapaneseWord("万", ["10000", "ten thousand", "10_000", "ten thousands"], ks="まん"),
 
