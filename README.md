@@ -4,7 +4,7 @@ Learn Japanese program by dmyTRUEk
 
 
 ## Todo:
-- impl smarter `kana_to_latin`, so that `riyu` -> `ryu`, `*ha` -> `*wa`, etc
+- impl smarter `kana_to_latin`, so that only correct `riyu` -> `ryu`, `*ha` -> `*wa`, `you` -> `yoo`, `*he` -> `e`
 - what checking answer, dont count for trailing dot (`.`)
 - dont wait for enter if ctrl+c
 - print description
