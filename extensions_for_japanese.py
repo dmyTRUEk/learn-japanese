@@ -58,12 +58,11 @@ def translit_to_kana(japanese_word: str) -> str | list[str]:
             assert(len(found) == 1)
             word = found[0]
             assert(word.kana_spelling is not None)
-            ks: str | list[str] = word.kana_spelling
-            match ks:
-                case str(_ks):
-                    kana_spelling += _ks
+            match word.kana_spelling:
+                case str(ks):
+                    kana_spelling += ks
                 case list(kss):
-                    kana_spelling = kss | map_(lambda _ks: kana_spelling + _ks)
+                    kana_spelling = kss | map_(lambda ks: kana_spelling + ks)
                 case _:
                     unreachable()
         else:
