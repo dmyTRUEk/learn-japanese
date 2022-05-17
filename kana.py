@@ -33,7 +33,7 @@ JAPANESE_LETTERS: list[JapaneseLetter] = [
     JapaneseLetter("so", "そ", "ソ"),
 
     JapaneseLetter("za", "ざ", "ザ"),
-    JapaneseLetter("zhi", "じ", "ジ"),
+    JapaneseLetter("ji", "じ", "ジ"),
     JapaneseLetter("zu", "ず", "ズ"),
     JapaneseLetter("ze", "ぜ", "ゼ"),
     JapaneseLetter("zo", "ぞ", "ゾ"),
