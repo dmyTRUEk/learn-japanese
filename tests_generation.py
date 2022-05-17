@@ -6,7 +6,7 @@ from random import choice as random_choice, gauss as random_gauss
 from time import time as current_time
 from typing import Iterator
 
-from extensions_python import join_str, unreachable
+from extensions_python import join_elements, join_str, unreachable
 from extensions_pipe import abs_, map_, max_, to_int_round
 from kana import JAPANESE_LETTERS
 from kana_class import JapaneseLetter
@@ -89,8 +89,19 @@ def gen_test_kanji_translate(japanese_word: None | JapaneseWord = None) -> Test:
     if japanese_word is None:
         assert(len(JAPANESE_WORDS) > 0)
         japanese_word = random_choice(JAPANESE_WORDS)
+    message_to_fmt: str = Constants.TRANSLATE_TO_FMT
+    if (japanese_word.kana_spelling is not None and
+            japanese_word.word != japanese_word.kana_spelling):
+        match japanese_word.kana_spelling:
+            case str(s):
+                message_to_fmt += f"  ({s})"
+            case list(l):
+                s: str = join_elements(l)
+                message_to_fmt += f"  ({s})"
+            case _:
+                unreachable()
     return Test(
-        Constants.TRANSLATE_TO_FMT,
+        message_to_fmt,
         japanese_word.word,
         japanese_word.translation,
         desc=japanese_word.description,
