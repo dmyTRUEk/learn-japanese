@@ -39,6 +39,10 @@ JAPANESE_WORDS: list[JapaneseWord] = [
     JapaneseWord("たんじょび", "birthday"),
     JapaneseWord("スマホ", "smartphone"),
 
+    JapaneseWord("おはよございます。", "good morning"),
+    JapaneseWord("こんにちは。", ["good day", "good afternoon"]),
+    JapaneseWord("こんばんは。", "good evening"),
+
     JapaneseWord("今日", "today",     ks="きょう"),
     JapaneseWord("明日", "tomorrow",  ks="あした"),
     JapaneseWord("昨日", "yesterday", ks="きのう"),
@@ -50,14 +54,10 @@ JAPANESE_WORDS: list[JapaneseWord] = [
     JapaneseWord("木曜日", "thursday",  ks="もくようび"),
     JapaneseWord("金曜日", "friday",    ks="きんようび"),
     JapaneseWord("土曜日", "saturday",  ks="どようび"),
-    JapaneseWord("曜", ["day of the week", "day of week"], ks="よ"),
+    # JapaneseWord("曜", ["day of the week", "day of week"], ks="よ"),
 
     JapaneseWord("日", "day", ks="ひ"),
     JapaneseWord("夜", "night", ks="よる"),
-
-    JapaneseWord("おはよございます。", "good morning"),
-    JapaneseWord("こんにちは。", ["good day", "good afternoon"]),
-    JapaneseWord("こんばんは。", "good evening"),
 
     JapaneseWord("名", "name", ks="なまえ"),
     JapaneseWord("お名は？", ["what is your name?", "what's your name?", "whats your name?"]),
@@ -67,7 +67,7 @@ JAPANESE_WORDS: list[JapaneseWord] = [
     JapaneseWord("火", "fire", ks=["か", "ひ"]),
     JapaneseWord("水", "water", ks=["みず", "すい"]),
     JapaneseWord("木", "tree", ks=["き", "もく"]),
-    JapaneseWord("土", ["soil", "earth"], ks=["つち", "ど"]),
+    JapaneseWord("土", ["earth", "soil"], ks=["つち", "ど"]),
 
     JapaneseWord("犬", "dog", ks="いぬ"),
     JapaneseWord("猫", "cat", ks="ねこ"),
@@ -77,7 +77,7 @@ JAPANESE_WORDS: list[JapaneseWord] = [
     JapaneseWord("月", "moon", ks="つき"),
     JapaneseWord("太陽", "sun", ks="たいよ"),
     JapaneseWord("森", ["forest", "woods"], ks="もり"),
-    JapaneseWord("襲う", "attack", ks="おそう"), # check "o" or "O" in ks
+    # JapaneseWord("襲う", "attack", ks="おそう"), # check "o" or "O" in ks
     JapaneseWord("朝", "morning", ks="あさ"),
     JapaneseWord("朝ご飯", "breakfast", ks="あさごはん"),
 
