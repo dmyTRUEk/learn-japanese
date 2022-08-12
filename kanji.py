@@ -27,6 +27,10 @@ JAPANESE_WORDS: list[JapaneseWord] = [
     JapaneseWord("男", ["man", "male", "men"], ks="おとこ"),
     JapaneseWord("光", ["light", "shine"], ks="ひかり"),
 
+    JapaneseWord("これ", "this"),
+    JapaneseWord("それ", "that"),
+    JapaneseWord("あれ", "that2"),
+
     JapaneseWord("あなた", "you"),
     JapaneseWord("ごぜん", ["AM", "am"], desc="before 12:00"),
     JapaneseWord("ごご",   ["PM", "pm"], desc="after 12:00"),
@@ -71,6 +75,15 @@ JAPANESE_WORDS: list[JapaneseWord] = [
 
     JapaneseWord("犬", "dog", ks="いぬ"),
     JapaneseWord("猫", "cat", ks="ねこ"),
+
+    JapaneseWord("かさ", "umbrella"),
+    JapaneseWord("みず", "water"),
+    JapaneseWord("りんご", "apple"),
+    JapaneseWord("いくら", "how much"),
+    JapaneseWord("てん", [".", "decimal point"]),
+    JapaneseWord("ぶん", ["/", "part"]),
+    JapaneseWord("さんぶんの に", "2/3"),
+
     JapaneseWord("髪", "hair", ks="かみ"),
     JapaneseWord("休み", "rest", ks="やすみ"),
 
