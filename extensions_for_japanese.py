@@ -15,6 +15,8 @@ JAPANESE_PUNCTUATION_TO_ENG: dict[char, char] = {
     '、': ',',
     '！': '!',
     '？': '?',
+    ' ': ' ',
+    # '': ' ', TODO: add japanese space
 }
 
 

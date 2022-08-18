@@ -132,7 +132,7 @@ def beautiful_repr(cls):
 
 def is_latin(string: str | list[str]) -> bool:
     LATIN_LATTERS: str = "abcdefghijklmnopqrstuvwxyz"
-    LATIN_PUNCTUATION: list[str] = [",", ".", "!", "?"]
+    LATIN_PUNCTUATION: list[str] = [" ", ",", ".", "!", "?"]
     match string:
         case str(s):
             return all(map(
