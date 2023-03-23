@@ -68,7 +68,7 @@ def run_test(test_types: list[TestType], test_len: TestLength) -> tuple[list[boo
                     if is_exited: break
             case TestLength.CertainAmount:
                 assert(hasattr(test_len, "n"))
-                for test in generate_tests_certain_amount(test_types, test_len.n):
+                for test in generate_tests_certain_amount(test_types, test_len.n): # pyright: ignore
                     is_exited = ask_check_update(test)
                     if is_exited: break
             case TestLength.Endless:
@@ -122,7 +122,7 @@ def ask_test_types() -> list[TestType]:
             exit("Not a floating point number")
         except KeyboardInterrupt:
             exit()
-        found.difficulty = difficulty
+        found.difficulty = difficulty # pyright: ignore
 
     return test_types
 
@@ -147,7 +147,7 @@ def ask_test_len(test_types: list[TestType]) -> TestLength:
 
     test_len = test_lens[chosen_option]
     if test_len == TestLength.CertainAmount:
-        test_len.n = int(input("How many times? "))
+        test_len.n = int(input("How many times? ")) # pyright: ignore
     return test_len
 
 

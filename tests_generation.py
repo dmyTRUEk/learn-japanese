@@ -28,7 +28,7 @@ class Constants:
 def try_generate_unique_test(test_types: list[TestType], used_tests: set[Test]) -> None | Test:
     time_start = current_time()
     # TODO?: maybe optimize this by not checking time EVERY time, but once in 100 or smt?
-    while (time_elapsed := current_time() - time_start) < Constants.TIME_LIMIT:
+    while (time_elapsed := (current_time() - time_start)) < Constants.TIME_LIMIT:
         test = generate_test(test_types)
         if test not in used_tests:
             used_tests.add(test)
@@ -156,8 +156,8 @@ def generate_test(test_types: list[TestType]) -> Test:
         case TestType.KanaRandomWords:
             assert(hasattr(test_type, "difficulty"))
             return random_choice([
-                gen_test_hiragana_random_word(test_type.difficulty),
-                gen_test_katakana_random_word(test_type.difficulty),
+                gen_test_hiragana_random_word(test_type.difficulty), # pyright: ignore
+                gen_test_katakana_random_word(test_type.difficulty), # pyright: ignore
             ])
         case TestType.KanjiTranslate:
             return gen_test_kanji_translate()
