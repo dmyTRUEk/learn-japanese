@@ -2,7 +2,7 @@
 Learn Japanese program by dmyTRUEk
 """
 
-__version__ = "0.6.2"
+__version__ = "0.6.3"
 
 from copy import deepcopy
 from sys import exit as sys_exit
